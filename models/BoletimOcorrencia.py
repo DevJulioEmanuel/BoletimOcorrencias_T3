@@ -51,15 +51,17 @@ class StatusBoletim(Enum):
     AGUARDANDO_VALIDACAO = "Aguardando Validação"
     REABERTO = "Reaberto"  
 
-class BoletimOcorrencia(SQLModel, table=True):
+class BoletimOcorrenciaBase(SQLModel):
     __tablename__ = 'boletimocorrencia'
     id_boletim: int | None = Field(default_factory=None, primary_key=True)
     data_registro: date
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
+
+class BoletimOcorrencia(BoletimOcorrenciaBase, table=True):
     autor_id: int = Field(foreign_key = "autor.id_autor")
-    autor: Autor = Relationship(back_populates="autor")
+    autor: Autor = Relationship(back_populates="boletimOcorrencia")
     declarantes: list["Declarante"] = Relationship(back_populates="boletins", link_model=DeclaranteBoletim)
 
     

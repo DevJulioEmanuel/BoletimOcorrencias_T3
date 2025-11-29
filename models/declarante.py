@@ -20,7 +20,7 @@ class TipoEnvolvimento(Enum):
     RESPONSAVEL_ESTABELECIMENTO = "Responsável pelo Estabelecimento"
     OUTRO = "Outro"
 
-class Declarante(SQLModel, table=True):
+class DeclaranteBase(SQLModel):
     __tablename__ = 'declarante'
     id_declarante: int | None = Field(default_factory=None, primary_key=True)
     nome: str
@@ -28,4 +28,6 @@ class Declarante(SQLModel, table=True):
     data_nascimento: date
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
+
+class Declarante(DeclaranteBase, table=True):
     boletins: list["BoletimOcorrencia"] = Relationship(back_populates="declarantes", link_model=DeclaranteBoletim)
