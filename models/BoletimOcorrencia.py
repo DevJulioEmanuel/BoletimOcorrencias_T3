@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from datetime import date
 from enum import Enum
 from .Declarante_Boletim import DeclaranteBoletim
+from models.autor import Autor
 
 
 class TipoOcorrencia(str, Enum):
