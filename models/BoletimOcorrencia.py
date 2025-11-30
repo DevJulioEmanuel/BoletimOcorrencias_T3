@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, Relationship
 from datetime import date
 from enum import Enum
 from .Declarante_Boletim import DeclaranteBoletim
+from models.autor import Autor
 
 
 class TipoOcorrencia(str, Enum):
@@ -51,16 +52,16 @@ class StatusBoletim(Enum):
     REABERTO = "Reaberto"  
 
 class BoletimOcorrenciaBase(SQLModel):
-    __tablename__ = 'boletimocorrencia'
-    id_boletim: int | None = Field(default_factory=None, primary_key=True)
+    
     data_registro: date
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
+    autor_id: int = Field(foreign_key = "autor.id_autor")
+
 
 class BoletimOcorrencia(BoletimOcorrenciaBase, table=True):
-    autor_id: int = Field(foreign_key = "autor.id_autor")
+    __tablename__ = 'boletimocorrencia'
+    id_boletim: int | None = Field(default_factory=None, primary_key=True)
     autor: Autor = Relationship(back_populates="boletimOcorrencia")
     declarantes: list["Declarante"] = Relationship(back_populates="boletins", link_model=DeclaranteBoletim)
-
-    

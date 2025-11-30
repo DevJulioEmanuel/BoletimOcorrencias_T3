@@ -5,6 +5,7 @@ from models.autor import Autor
 from contextlib import asynccontextmanager
 from database import create_db_and_tables, get_session
 from sqlalchemy.ext.asyncio import AsyncSession
+from rotas import autor, boletim, declarante
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -12,3 +13,8 @@ async def lifespan(app: FastAPI):
     yield
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(autor.router)
+app.include_router(boletim.router)
+app.include_router(declarante.router)
+
