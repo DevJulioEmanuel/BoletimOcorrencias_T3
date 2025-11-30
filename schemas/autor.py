@@ -5,3 +5,7 @@ class AutorBase(SQLModel):
     matricula: str
     posto: str
     lotacao: str
+
+class AutorRanking(SQLModel):
+    nome: str
+    total_boletins: int

@@ -30,6 +30,17 @@ async def read_declarantes(
 ):
     return await service.list_declarantes(offset, limit, session)
 
+@router.get("/sem-boletim")
+async def declarantes_sem_boletim(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.declarantes_sem_boletim(session)
+
+@router.get("/ranking")
+async def ranking_declarantes(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.ranking_declarantes(session)
 
 @router.get("/{id_declarante}", response_model=Declarante)
 async def read_declarante(id_declarante: int, session: AsyncSession = Depends(get_session)):
@@ -55,16 +66,3 @@ async def declarantes_reincidentes_por_tipo(
 ):
     return await service.declarantes_reincidentes_por_tipo(session)
 
-
-@router.get("/sem-boletim")
-async def declarantes_sem_boletim(
-    session: AsyncSession = Depends(get_session)
-):
-    return await service.declarantes_sem_boletim(session)
-
-
-@router.get("/ranking")
-async def ranking_declarantes(
-    session: AsyncSession = Depends(get_session)
-):
-    return await service.ranking_declarantes(session)

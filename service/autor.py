@@ -1,7 +1,7 @@
 from sqlmodel.ext.asyncio.session import AsyncSession
 from repository.autor import AutorRepository
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from schemas.autor import AutorBase
+from schemas.autor import AutorBase, AutorRanking
 
 
 class AutorService:
@@ -37,5 +37,5 @@ class AutorService:
         except IntegrityError as e:
             raise IntegrityError(f"Erro: {e}", None, None)
 
-    async def ranking_autores(self, session: AsyncSession):
+    async def ranking_autores(self, session: AsyncSession) -> AutorRanking:
         return await self.repo.ranking_autores(session)

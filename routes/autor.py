@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Query, status
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy.ext.asyncio import AsyncSession
 from models.autor import Autor
-from schemas.autor import AutorBase
+from schemas.autor import AutorBase, AutorRanking
 from core.db import get_session
 from typing import List
 from service.autor import AutorService
@@ -36,8 +36,25 @@ async def read_autores(
 ):
     return await service.list_autores(offset, limit, session)
 
+@router.get("/ranking", response_model=list[AutorRanking]) 
+async def ranking_autores_route(
+    session: AsyncSession = Depends(get_session)
+):
+    try:
+        return await service.ranking_autores(session)
+        
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao executar a consulta complexa no banco de dados. Detalhe: {e.args[0]}"
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocorreu um erro inesperado no servidor."
+        )
 
-@router.get("/autor/{id_autor}", response_model=Autor)
+@router.get("/{id_autor}", response_model=Autor)
 async def read_autor(id_autor: int, session: AsyncSession = Depends(get_session)):
     autor = await service.get_autor(id_autor, session)
     if not autor:
@@ -72,21 +89,3 @@ async def delete_autor(id_autor: int, session: AsyncSession = Depends(get_sessio
     except IntegrityError as e:
         raise HTTPException(status_code=409, detail=str(e))
     
-
-@router.get("/ranking", response_model=List[dict]) 
-async def ranking_autores_route(
-    session: AsyncSession = Depends(get_session)
-):
-    try:
-        return await service.ranking_autores(session)
-        
-    except SQLAlchemyError as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Erro ao executar a consulta complexa no banco de dados. Detalhe: {e.args[0]}"
-        )
-    except Exception:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Ocorreu um erro inesperado no servidor."
-        )

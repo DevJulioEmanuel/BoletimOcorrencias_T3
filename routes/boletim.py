@@ -24,25 +24,6 @@ async def create_boletim(
 async def list_boletins(session: AsyncSession = Depends(get_session)):
     return await service.list_boletins(session)
 
-
-@router.get("/{id_boletim}", response_model=BoletimOcorrencia)
-async def get_boletim(id_boletim: int, session: AsyncSession = Depends(get_session)):
-    return await service.get_boletim(id_boletim, session)
-
-
-@router.put("/{id_boletim}", response_model=BoletimOcorrencia)
-async def update_boletim(
-    id_boletim: int,
-    boletim: BoletimOcorrenciaBase,
-    session: AsyncSession = Depends(get_session)
-):
-    return await service.update_boletim(id_boletim, boletim, session)
-
-
-@router.delete("/{id_boletim}", status_code=status.HTTP_200_OK)
-async def delete_boletim(id_boletim: int, session: AsyncSession = Depends(get_session)):
-    return await service.delete_boletim(id_boletim, session)
-
 @router.get("/completos")
 async def listar_completos(session: AsyncSession = Depends(get_session)):
     return await service.listar_completos(session)
@@ -64,3 +45,22 @@ async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
     session: AsyncSession = Depends(get_session)
 ):
     return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)
+
+
+@router.get("/{id_boletim}", response_model=BoletimOcorrencia)
+async def get_boletim(id_boletim: int, session: AsyncSession = Depends(get_session)):
+    return await service.get_boletim(id_boletim, session)
+
+
+@router.put("/{id_boletim}", response_model=BoletimOcorrencia)
+async def update_boletim(
+    id_boletim: int,
+    boletim: BoletimOcorrenciaBase,
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.update_boletim(id_boletim, boletim, session)
+
+
+@router.delete("/{id_boletim}", status_code=status.HTTP_200_OK)
+async def delete_boletim(id_boletim: int, session: AsyncSession = Depends(get_session)):
+    return await service.delete_boletim(id_boletim, session)
