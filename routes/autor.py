@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.autor import Autor
 from schemas.autor import AutorBase, AutorRanking
 from core.db import get_session
-from typing import List
 from service.autor import AutorService
 
 router = APIRouter(
@@ -35,7 +34,7 @@ async def create_autor(
 
 @router.get(
     path="/",
-    response_model=List[Autor],
+    response_model=list[Autor],
     status_code=status.HTTP_200_OK,
     description="busca os autores cadastrados"        
 )

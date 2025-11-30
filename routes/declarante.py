@@ -1,8 +1,7 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import List
 from models.declarante import Declarante
-from schemas.declarante import DeclaranteBase
+from schemas.declarante import DeclaranteBase, RankingDeclarante
 from core.db import get_session
 from service.declarante import DeclaranteService
 
@@ -29,7 +28,7 @@ async def create_declarante(
 
 @router.get(
     path="/",
-    response_model=List[Declarante],
+    response_model=list[Declarante],
     status_code=status.HTTP_200_OK,
     description="busca todos os declarantes de forma paginada"    
 )
@@ -43,6 +42,7 @@ async def read_declarantes(
 @router.get(
     path="/sem-boletim",
     status_code=status.HTTP_200_OK,
+    response_model=list[Declarante],
     description="busca todos os declarantes sem boletim"    
 )
 async def declarantes_sem_boletim(
@@ -53,6 +53,7 @@ async def declarantes_sem_boletim(
 @router.get(
     path="/ranking",
     status_code=status.HTTP_200_OK,
+    response_model=list[RankingDeclarante],
     description="busca declarantes que possuem mais boletins registrados"    
 )
 async def ranking_declarantes(
@@ -98,6 +99,7 @@ async def delete_declarante(id_declarante: int, session: AsyncSession = Depends(
 @router.get(
     path="/reincidentes/tipo",
     status_code=status.HTTP_200_OK,
+    response_model=list[Declarante],
     description="busca declarantes por reincidentes"    
 )
 async def declarantes_reincidentes_por_tipo(

@@ -230,7 +230,7 @@ class BoletimRepository:
         :rtype: list[tuple[BoletimOcorrencia, Autor]]
         """
         stmt = (
-        select(BoletimOcorrencia, Autor)
+        select(BoletimOcorrencia)
         .join(BoletimOcorrencia.autor)
         .where(Autor.posto == posto)
         )
@@ -273,4 +273,17 @@ class BoletimRepository:
         )
 
         result = await session.exec(stmt)
-        return result.all()
+        rows = result.all()
+        return [
+            {
+                "id_boletim": r[0],
+                "data_registro": r[1],
+                "tipo_ocorrencia": r[2],
+                "descricao": r[3],
+                "status": r[4],
+                "nome_autor": r[5],
+                "lotacao_autor": r[6],
+                "total_declarantes": r[7],
+            }
+            for r in rows
+        ]

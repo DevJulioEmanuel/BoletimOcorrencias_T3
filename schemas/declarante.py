@@ -9,3 +9,7 @@ class DeclaranteBase(SQLModel):
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
 
+class RankingDeclarante(SQLModel):
+    nome: str
+    total: int
+

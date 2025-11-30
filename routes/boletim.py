@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, status
 from sqlmodel.ext.asyncio.session import AsyncSession
-from typing import List
 
 from models.boletim_ocorrencia import BoletimOcorrencia
 from schemas.boletim import BoletimOcorrenciaBase
 from core.db import get_session
 from service.boletim import BoletimService
+from schemas.boletim import BoletimOcorrenciaCompleto, BoletimOcorrenciaPorDeclarantes, BoletimOcorrencia, BoletimOcorrenciaResumo
 
 
 router = APIRouter(prefix="/boletins", tags=["Boletins"])
@@ -27,7 +27,7 @@ async def create_boletim(
 
 @router.get(
     path="/",
-    response_model=List[BoletimOcorrencia],
+    response_model=list[BoletimOcorrencia],
     status_code=status.HTTP_200_OK,
     description="busca todos os boletins de ocorrencia registrados de forma paginada"
 )
@@ -41,6 +41,7 @@ async def list_boletins(
 @router.get(
     path="/completos",
     status_code=status.HTTP_200_OK,
+    response_model=list[BoletimOcorrenciaCompleto],
     description="busca boletins de ocorrencia com sua estrutura completa"
 )
 async def listar_completos(
@@ -52,6 +53,7 @@ async def listar_completos(
 @router.get(
     path="/multiplos-declarantes",
     status_code=status.HTTP_200_OK,
+    response_model=list[BoletimOcorrenciaPorDeclarantes],
     description="busca boletins de ocorrencia que tem multiplos declarantes"
 )
 async def boletins_com_mais_de_um_declarante(
@@ -63,6 +65,7 @@ async def boletins_com_mais_de_um_declarante(
 @router.get(
     path="/por-posto/{posto}",
     status_code=status.HTTP_200_OK,
+    response_model=list[BoletimOcorrencia],
     description="busca boletins de ocorrencia por posto especifico"    
 )
 async def boletins_por_posto(
@@ -75,6 +78,7 @@ async def boletins_por_posto(
 @router.get(
     path="/abertos/lotacao/{lotacao}",
     status_code=status.HTTP_200_OK,
+    response_model=list[BoletimOcorrenciaResumo],
     description="busca boletins por lotacao especifica"
 )
 async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
@@ -101,7 +105,6 @@ async def get_boletim(
     path="/{id_boletim}",
     status_code=status.HTTP_200_OK,
     response_model=BoletimOcorrencia
-    
 )
 async def update_boletim(
     id_boletim: int,
