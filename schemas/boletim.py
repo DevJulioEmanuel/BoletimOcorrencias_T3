@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Field
 from datetime import date
 from models.boletim_ocorrencia import TipoOcorrencia, StatusBoletim
 
@@ -7,9 +7,5 @@ class BoletimOcorrenciaBase(SQLModel):
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
-
-class BoletimOcorrenciaCreate(BoletimOcorrenciaBase):
     autor_id: int
-
-class BoletimOcorrenciaResponse(BoletimOcorrenciaBase):
-    id_boletim: int
+    declarante_ids: list[int] = Field(default_factory=list)

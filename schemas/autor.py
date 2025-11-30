@@ -6,8 +6,6 @@ class AutorBase(SQLModel):
     posto: str
     lotacao: str
 
-class AutorCreate(AutorBase):
-    pass
-
-class AutorResponse(AutorBase):
-    id_autor: int
+class AutorRanking(SQLModel):
+    nome: str
+    total_boletins: int

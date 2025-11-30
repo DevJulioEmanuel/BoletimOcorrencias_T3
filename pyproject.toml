@@ -4,12 +4,25 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
+
 dependencies = [
     "aiosqlite>=0.21.0",
     "alembic>=1.17.2",
     "asyncpg>=0.31.0",
     "dotenv>=0.9.9",
     "fastapi[standard]>=0.122.0",
+    "greenlet>=3.2.4",
     "psycopg2-binary>=2.9.11",
     "sqlmodel>=0.0.27",
 ]
+
+[tool.setuptools.packages.find]
+include = ["rotas", "models", "migrations"]
+exclude = []
+
+[tool.setuptools.package-data]
+"*" = ["*"]
+
+[build-system]
+requires = ["setuptools>=61.0.0"]
+build-backend = "setuptools.build_meta"

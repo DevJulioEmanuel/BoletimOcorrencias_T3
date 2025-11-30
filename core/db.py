@@ -4,12 +4,12 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
 from sqlalchemy import event
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 import os
 
 load_dotenv()
 
-URL_DATABASE = os.getenv("URL_DATABASE")
+URL_DATABASE = os.getenv("DATABASE_URL")
 
 engine = create_async_engine(
     URL_DATABASE,

@@ -1,9 +1,8 @@
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import date
 from enum import Enum
-from models.declarante_boletim import DeclaranteBoletim
 from models.autor import Autor
-
+from models.declarante_boletim import DeclaranteBoletim
 
 class TipoOcorrencia(str, Enum):
     FURTO = "Furto"
@@ -59,11 +58,16 @@ class BoletimOcorrencia(SQLModel, table=True):
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
-
     autor_id: int = Field(foreign_key="autor.id_autor")
+
     autor: Autor = Relationship(back_populates="boletins")
+
+    boletim_declarantes: list["DeclaranteBoletim"] = Relationship(
+        back_populates="boletim"
+    )
 
     declarantes: list["Declarante"] = Relationship(
         back_populates="boletins",
         link_model=DeclaranteBoletim
     )
+

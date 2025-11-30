@@ -21,7 +21,10 @@ class Declarante(SQLModel, table=True):
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
 
+    declarante_boletim: list["DeclaranteBoletim"] = Relationship(back_populates="declarante")
+
     boletins: list["BoletimOcorrencia"] = Relationship(
-        back_populates="declarantes", 
-        link_model=DeclaranteBoletim
+        back_populates="declarantes",
+        link_model=DeclaranteBoletim,
     )
+

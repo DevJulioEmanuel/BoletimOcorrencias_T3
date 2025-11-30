@@ -9,8 +9,3 @@ class DeclaranteBase(SQLModel):
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
 
-class DeclaranteCreate(DeclaranteBase):
-    pass
-
-class DeclaranteResponse(DeclaranteBase):
-    id_declarante: int
