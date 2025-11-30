@@ -1,5 +1,8 @@
+import sqlite3
+
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncEngine
+from sqlalchemy import event
 
 from dotenv import load_dotenv
 import os
@@ -21,3 +24,10 @@ engine = create_async_engine(
 async def get_session():
     async with AsyncSession(engine) as session:
         yield session
+
+@event.listens_for(engine, "do_connect")
+def _set_sqlitye_pragma(dbapi_conn, conn_record):
+    if isinstance(dbapi_conn, sqlite3.Connection):
+        dbapi_conn.execute("PRAGMA journal_mode=WAL;")
+        dbapi_conn.execute("PRAGMA synchronous=NORMAL;")
+        dbapi_conn.execute("PRAGMA foreign_keys=ON;")
