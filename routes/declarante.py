@@ -30,6 +30,7 @@ async def create_declarante(
 @router.get(
     path="/",
     response_model=List[Declarante],
+    status_code=status.HTTP_200_OK,
     description="busca todos os declarantes de forma paginada"    
 )
 async def read_declarantes(
@@ -41,6 +42,7 @@ async def read_declarantes(
 
 @router.get(
     path="/sem-boletim",
+    status_code=status.HTTP_200_OK,
     description="busca todos os declarantes sem boletim"    
 )
 async def declarantes_sem_boletim(
@@ -50,6 +52,7 @@ async def declarantes_sem_boletim(
 
 @router.get(
     path="/ranking",
+    status_code=status.HTTP_200_OK,
     description="busca declarantes que possuem mais boletins registrados"    
 )
 async def ranking_declarantes(
@@ -60,6 +63,7 @@ async def ranking_declarantes(
 @router.get(
     path="/{id_declarante}",
     response_model=Declarante,
+    status_code=status.HTTP_200_OK,
     description="busca declarante por id"    
 )
 async def read_declarante(
@@ -72,6 +76,7 @@ async def read_declarante(
 @router.put(
     path="/{id_declarante}",
     response_model=Declarante,
+    status_code=status.HTTP_200_OK,
     description="edita um declarante"    
 )
 async def update_declarante(
@@ -84,7 +89,7 @@ async def update_declarante(
 
 @router.delete(
     path="/{id_declarante}",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_204_NO_CONTENT,
     description="deleta um declarante"    
 )
 async def delete_declarante(id_declarante: int, session: AsyncSession = Depends(get_session)):
@@ -92,6 +97,7 @@ async def delete_declarante(id_declarante: int, session: AsyncSession = Depends(
 
 @router.get(
     path="/reincidentes/tipo",
+    status_code=status.HTTP_200_OK,
     description="busca declarantes por reincidentes"    
 )
 async def declarantes_reincidentes_por_tipo(

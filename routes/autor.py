@@ -36,6 +36,7 @@ async def create_autor(
 @router.get(
     path="/",
     response_model=List[Autor],
+    status_code=status.HTTP_200_OK,
     description="busca os autores cadastrados"        
 )
 async def read_autores(
@@ -48,6 +49,7 @@ async def read_autores(
 @router.get(
     path="/ranking",
     response_model=list[AutorRanking],
+    status_code=status.HTTP_200_OK,
     description="busca os autores que mais registraram boletins"
 ) 
 async def ranking_autores_route(
@@ -70,6 +72,7 @@ async def ranking_autores_route(
 @router.get(
     path="/{id_autor}",
     response_model=Autor,
+    status_code=status.HTTP_200_OK,
     description="busca um autor por id"        
 )
 async def read_autor(
@@ -85,6 +88,7 @@ async def read_autor(
 @router.put(
     path="/{id_autor}",
     response_model=Autor,
+    status_code=status.HTTP_200_OK,
     description="edita um autor"    
 )
 async def update_autor(
@@ -105,6 +109,7 @@ async def update_autor(
 
 @router.delete(
     path="/{id_autor}",
+    status_code=status.HTTP_204_NO_CONTENT,
     description="deleta um autor"
 )
 async def delete_autor(id_autor: int, session: AsyncSession = Depends(get_session)):

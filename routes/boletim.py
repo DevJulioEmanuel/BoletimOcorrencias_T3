@@ -28,6 +28,7 @@ async def create_boletim(
 @router.get(
     path="/",
     response_model=List[BoletimOcorrencia],
+    status_code=status.HTTP_200_OK,
     description="busca todos os boletins de ocorrencia registrados de forma paginada"
 )
 async def list_boletins(
@@ -39,6 +40,7 @@ async def list_boletins(
 
 @router.get(
     path="/completos",
+    status_code=status.HTTP_200_OK,
     description="busca boletins de ocorrencia com sua estrutura completa"
 )
 async def listar_completos(
@@ -49,6 +51,7 @@ async def listar_completos(
 
 @router.get(
     path="/multiplos-declarantes",
+    status_code=status.HTTP_200_OK,
     description="busca boletins de ocorrencia que tem multiplos declarantes"
 )
 async def boletins_com_mais_de_um_declarante(
@@ -59,6 +62,7 @@ async def boletins_com_mais_de_um_declarante(
 
 @router.get(
     path="/por-posto/{posto}",
+    status_code=status.HTTP_200_OK,
     description="busca boletins de ocorrencia por posto especifico"    
 )
 async def boletins_por_posto(
@@ -70,6 +74,7 @@ async def boletins_por_posto(
 
 @router.get(
     path="/abertos/lotacao/{lotacao}",
+    status_code=status.HTTP_200_OK,
     description="busca boletins por lotacao especifica"
 )
 async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
@@ -81,6 +86,7 @@ async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
 
 @router.get(
     path="/{id_boletim}",
+    status_code=status.HTTP_200_OK,
     response_model=BoletimOcorrencia,
     description="busca boletim por id"
 )
@@ -93,6 +99,7 @@ async def get_boletim(
 
 @router.put(
     path="/{id_boletim}",
+    status_code=status.HTTP_200_OK,
     response_model=BoletimOcorrencia
     
 )
@@ -106,7 +113,7 @@ async def update_boletim(
 
 @router.delete(
     path="/{id_boletim}",
-    status_code=status.HTTP_200_OK
+    status_code=status.HTTP_204_NO_CONTENT
 )
 async def delete_boletim(
     id_boletim: int,
