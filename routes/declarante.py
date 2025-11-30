@@ -48,3 +48,23 @@ async def update_declarante(
 @router.delete("/{id_declarante}", status_code=status.HTTP_200_OK)
 async def delete_declarante(id_declarante: int, session: AsyncSession = Depends(get_session)):
     return await service.delete_declarante(id_declarante, session)
+
+@router.get("/reincidentes/tipo")
+async def declarantes_reincidentes_por_tipo(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.declarantes_reincidentes_por_tipo(session)
+
+
+@router.get("/sem-boletim")
+async def declarantes_sem_boletim(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.declarantes_sem_boletim(session)
+
+
+@router.get("/ranking")
+async def ranking_declarantes(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.ranking_declarantes(session)

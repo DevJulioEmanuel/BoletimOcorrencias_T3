@@ -42,3 +42,25 @@ async def update_boletim(
 @router.delete("/{id_boletim}", status_code=status.HTTP_200_OK)
 async def delete_boletim(id_boletim: int, session: AsyncSession = Depends(get_session)):
     return await service.delete_boletim(id_boletim, session)
+
+@router.get("/completos")
+async def listar_completos(session: AsyncSession = Depends(get_session)):
+    return await service.listar_completos(session)
+
+
+@router.get("/multiplos-declarantes")
+async def boletins_com_mais_de_um_declarante(session: AsyncSession = Depends(get_session)):
+    return await service.boletins_com_mais_de_um_declarante(session)
+
+
+@router.get("/por-posto/{posto}")
+async def boletins_por_posto(posto: str, session: AsyncSession = Depends(get_session)):
+    return await service.boletins_por_posto(posto, session)
+
+
+@router.get("/abertos/lotacao/{lotacao}")
+async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
+    lotacao: str,
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)

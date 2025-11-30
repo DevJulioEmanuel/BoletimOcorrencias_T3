@@ -58,9 +58,11 @@ class BoletimOcorrencia(SQLModel, table=True):
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
-    autor_id: int = Field(foreign_key = "autor.id_autor")
+    autor_id: int = Field(foreign_key="autor.id_autor")
 
-    autor: Autor = Relationship(back_populates="boletins")
+    autor: Autor = Relationship(
+        back_populates="boletins"
+    )
 
     declarantes: list["Declarante"] = Relationship(
         back_populates="boletins",

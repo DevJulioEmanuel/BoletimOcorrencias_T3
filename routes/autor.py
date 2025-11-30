@@ -71,3 +71,22 @@ async def delete_autor(id_autor: int, session: AsyncSession = Depends(get_sessio
         return {"ok": True, "message": f"Autor com ID {id_autor} deletado com sucesso."}
     except IntegrityError as e:
         raise HTTPException(status_code=409, detail=str(e))
+    
+
+@router.get("/ranking", response_model=List[dict]) 
+async def ranking_autores_route(
+    session: AsyncSession = Depends(get_session)
+):
+    try:
+        return await service.ranking_autores(session)
+        
+    except SQLAlchemyError as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erro ao executar a consulta complexa no banco de dados. Detalhe: {e.args[0]}"
+        )
+    except Exception:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Ocorreu um erro inesperado no servidor."
+        )

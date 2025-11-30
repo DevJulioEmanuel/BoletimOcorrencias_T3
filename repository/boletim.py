@@ -9,6 +9,7 @@ from models.boletim_ocorrencia import BoletimOcorrencia, StatusBoletim
 from models.autor import Autor
 from models.declarante_boletim import DeclaranteBoletim
 from models.autor import Autor
+from models.declarante import Declarante
 
 class BoletimRepository:
 
@@ -32,12 +33,32 @@ class BoletimRepository:
 
     async def get_by_id(self, id_boletim: int, session: AsyncSession):
         return await session.get(BoletimOcorrencia, id_boletim)
+    
+    from models.declarante import Declarante
 
     async def update(self, db_boletim: BoletimOcorrencia, boletim: BoletimOcorrenciaBase, session: AsyncSession):
         boletim_data = boletim.model_dump(exclude_unset=True)
 
         for key, value in boletim_data.items():
+            if key == "declarante_ids":
+                continue
             setattr(db_boletim, key, value)
+
+        if "declarante_ids" in boletim_data:
+            novos_declarantes = []
+
+            for id_declarante in boletim_data["declarante_ids"]:
+                result = await session.execute(
+                    select(Declarante).where(Declarante.id_declarante == id_declarante)
+                )
+                declarante = result.scalar_one_or_none()
+
+                if declarante:
+                    novos_declarantes.append(declarante)
+
+            await session.run_sync(
+                lambda s: setattr(db_boletim, 'declarantes', novos_declarantes)
+            )
 
         session.add(db_boletim)
 
