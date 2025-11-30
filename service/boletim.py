@@ -23,8 +23,8 @@ class BoletimService:
                 detail=f"Erro ao criar boletim: {e}"
             )
 
-    async def list_boletins(self, session: AsyncSession):
-        return await self.repo.list_all(session)
+    async def list_boletins(self, offset: int, limit: int,session: AsyncSession):
+        return await self.repo.list_all(offset, limit, session)
 
     async def get_boletim(self, id_boletim: int, session: AsyncSession):
         boletim = await self.repo.get_by_id(id_boletim, session)

@@ -15,7 +15,12 @@ router = APIRouter(
 service = AutorService()
 
 
-@router.post("/", response_model=Autor, status_code=status.HTTP_201_CREATED)
+@router.post(
+    path="/",
+    response_model=Autor,
+    status_code=status.HTTP_201_CREATED,
+    description="cria um autor"
+)
 async def create_autor(
     autor: AutorBase,
     session: AsyncSession = Depends(get_session)
@@ -28,7 +33,11 @@ async def create_autor(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/", response_model=List[Autor])
+@router.get(
+    path="/",
+    response_model=List[Autor],
+    description="busca os autores cadastrados"        
+)
 async def read_autores(
     offset: int = 0,
     limit: int = Query(default=10, le=100),
@@ -36,7 +45,11 @@ async def read_autores(
 ):
     return await service.list_autores(offset, limit, session)
 
-@router.get("/ranking", response_model=list[AutorRanking]) 
+@router.get(
+    path="/ranking",
+    response_model=list[AutorRanking],
+    description="busca os autores que mais registraram boletins"
+) 
 async def ranking_autores_route(
     session: AsyncSession = Depends(get_session)
 ):
@@ -54,15 +67,26 @@ async def ranking_autores_route(
             detail="Ocorreu um erro inesperado no servidor."
         )
 
-@router.get("/{id_autor}", response_model=Autor)
-async def read_autor(id_autor: int, session: AsyncSession = Depends(get_session)):
+@router.get(
+    path="/{id_autor}",
+    response_model=Autor,
+    description="busca um autor por id"        
+)
+async def read_autor(
+    id_autor: int,
+    session: AsyncSession = Depends(get_session)
+):
     autor = await service.get_autor(id_autor, session)
     if not autor:
         raise HTTPException(status_code=404, detail="Autor não encontrado")
     return autor
 
 
-@router.put("/{id_autor}", response_model=Autor)
+@router.put(
+    path="/{id_autor}",
+    response_model=Autor,
+    description="edita um autor"    
+)
 async def update_autor(
     id_autor: int,
     autor: AutorBase,
@@ -79,7 +103,10 @@ async def update_autor(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.delete("/{id_autor}")
+@router.delete(
+    path="/{id_autor}",
+    description="deleta um autor"
+)
 async def delete_autor(id_autor: int, session: AsyncSession = Depends(get_session)):
     try:
         deleted = await service.delete_autor(id_autor, session)

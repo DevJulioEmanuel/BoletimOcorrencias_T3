@@ -39,11 +39,9 @@ class BoletimRepository:
             await session.rollback()
             raise e
 
-    async def list_all(self, session: AsyncSession):
-        result = await session.execute(
-            select(BoletimOcorrencia)
-        )
-        return result.scalars().all()
+    async def list_all(self, offset: int, limit: int,session: AsyncSession):
+        stmt = select(BoletimOcorrencia).offset(offset).limit(limit)
+        return await session.exec(stmt)
 
     async def get_by_id(self, id_boletim: int, session: AsyncSession):
         return await session.get(BoletimOcorrencia, id_boletim)
