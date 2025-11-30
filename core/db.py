@@ -25,7 +25,7 @@ async def get_session():
     async with AsyncSession(engine) as session:
         yield session
 
-@event.listens_for(engine, "do_connect")
+@event.listens_for(engine.sync_engine, "connect")
 def _set_sqlite_pragma(dbapi_conn, conn_record):
     if isinstance(dbapi_conn, sqlite3.Connection):
         dbapi_conn.execute("PRAGMA journal_mode=WAL;")
