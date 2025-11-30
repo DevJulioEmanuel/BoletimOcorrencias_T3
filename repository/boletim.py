@@ -124,7 +124,7 @@ class BoletimRepository:
     async def boletins_com_mais_de_um_declarante(self, session: AsyncSession):
         stmt = (
             select(
-                BoletimOcorrencia.id_boletim,
+                BoletimOcorrencia,
                 func.count(DeclaranteBoletim.declarante_id).label("total")
             )
             .join(DeclaranteBoletim)
@@ -133,7 +133,18 @@ class BoletimRepository:
         )
 
         result = await session.exec(stmt)
-        return result.all()
+        rows = result.all()
+
+        response = [
+            {
+                "boletim": r[0].model_dump(),
+                "total_declarantes": r[1]
+            }
+            for r in rows
+        ]
+
+        return response
+
 
     async def boletins_por_posto(self, posto: str, session: AsyncSession):
         stmt = (
