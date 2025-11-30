@@ -35,4 +35,3 @@ async def get_session() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSession(engine) as session:
         yield session
 
-asyncio.run(create_db_and_tables())

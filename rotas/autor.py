@@ -15,8 +15,9 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=Autor, status_code=status.HTTP_201_CREATED)
-async def create_autor(autor: Autor, session: AsyncSession = Depends(get_session)):
-    session.add(autor)
+async def create_autor(autor: AutorBase, session: AsyncSession = Depends(get_session)):
+    novo_autor = Autor(**autor.model_dump())
+    session.add(novo_autor)
     try:
         await session.commit()
     except IntegrityError:
@@ -31,8 +32,8 @@ async def create_autor(autor: Autor, session: AsyncSession = Depends(get_session
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erro no banco de dados: {e}"
         )
-    await session.refresh(autor)
-    return autor
+    await session.refresh(novo_autor)
+    return novo_autor
 
 @router.get("/", response_model=List[Autor])
 async def read_autores(
@@ -55,7 +56,7 @@ async def read_autor(id_autor: int, session: AsyncSession = Depends(get_session)
     return autor
 
 @router.put("/{id_autor}", response_model=Autor)
-async def update_autor(id_autor: int, autor: Autor, session: AsyncSession = Depends(get_session)):
+async def update_autor(id_autor: int, autor: AutorBase, session: AsyncSession = Depends(get_session)):
     db_autor = await session.get(Autor, id_autor)
     
     if not db_autor:
