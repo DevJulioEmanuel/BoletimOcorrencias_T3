@@ -20,7 +20,21 @@ class BoletimRepository:
         try:
             await session.commit()
             await session.refresh(db_boletim)
+
+            if boletim.declarante_ids:
+                for declarante_id in boletim.declarante_ids:
+                    link = DeclaranteBoletim(
+                        boletim_id=db_boletim.id_boletim,
+                        declarante_id=declarante_id,
+                    )
+                    session.add(link)
+
+                await session.commit()
+
+            await session.refresh(db_boletim)
+
             return db_boletim
+
         except SQLAlchemyError as e:
             await session.rollback()
             raise e
