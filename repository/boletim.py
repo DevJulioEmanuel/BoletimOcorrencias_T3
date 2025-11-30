@@ -85,7 +85,7 @@ class BoletimRepository:
             select(BoletimOcorrencia)
             .options(
                 selectinload(BoletimOcorrencia.autor),
-                selectinload(BoletimOcorrencia.declarantes)
+                selectinload(BoletimOcorrencia.declarantes),
             )
         )
 
@@ -99,11 +99,13 @@ class BoletimRepository:
                 "tipo_ocorrencia": b.tipo_ocorrencia.value,
                 "status": b.status.value,
                 "descricao": b.descricao,
-                "autor": b.autor.nome if b.autor else None,
-                "declarantes": [d.nome for d in b.declarantes]
+                "autor": b.autor,
+                "declarantes": b.declarantes
             }
             for b in boletins
         ]
+
+
 
     async def boletins_com_mais_de_um_declarante(self, session: AsyncSession):
         stmt = (
@@ -121,31 +123,37 @@ class BoletimRepository:
 
     async def boletins_por_posto(self, posto: str, session: AsyncSession):
         stmt = (
-            select(BoletimOcorrencia, Autor)
-            .join(Autor)
-            .where(Autor.posto == posto)
+        select(BoletimOcorrencia, Autor)
+        .join(BoletimOcorrencia.autor)
+        .where(Autor.posto == posto)
         )
         result = await session.exec(stmt)
         return result.all()
 
-    async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, session: AsyncSession):
-        stmt = (
-            select(
-                BoletimOcorrencia.id_boletim,
-                BoletimOcorrencia.data_registro,
-                BoletimOcorrencia.tipo_ocorrencia,
-                Autor.nome,
-                Autor.lotacao,
-                func.count(DeclaranteBoletim.declarante_id).label("total_declarantes")
-            )
-            .join(Autor)
-            .join(DeclaranteBoletim)
-            .where(
-                BoletimOcorrencia.status == StatusBoletim.REGISTRADO,
-                Autor.lotacao == lotacao
-            )
-            .group_by(BoletimOcorrencia.id_boletim, Autor.id_autor)
-            .having(func.count(DeclaranteBoletim.declarante_id) > 1)
+async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, session: AsyncSession):
+    stmt = (
+        select(
+            BoletimOcorrencia.id_boletim,
+            BoletimOcorrencia.data_registro,
+            BoletimOcorrencia.tipo_ocorrencia,
+            BoletimOcorrencia.descricao,
+            BoletimOcorrencia.status,
+            Autor.nome,
+            Autor.lotacao,
+            func.count(DeclaranteBoletim.declarante_id).label("total_declarantes")
         )
-        result = await session.exec(stmt)
-        return result.all()
+        .join(BoletimOcorrencia.autor)
+        .join(DeclaranteBoletim)
+        .where(
+            BoletimOcorrencia.status == StatusBoletim.REGISTRADO,
+            Autor.lotacao == lotacao
+        )
+        .group_by(
+            BoletimOcorrencia.id_boletim,
+            Autor.id_autor
+        )
+        .having(func.count(DeclaranteBoletim.declarante_id) > 1)
+    )
+
+    result = await session.exec(stmt)
+    return result.all()
