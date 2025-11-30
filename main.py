@@ -1,10 +1,7 @@
-from fastapi import FastAPI, Depends
-from datetime import datetime
-from sqlmodel import SQLModel, Field, select, Session
-from models.autor import Autor
+from fastapi import FastAPI
+
 from contextlib import asynccontextmanager
-from database import create_db_and_tables, get_session
-from sqlalchemy.ext.asyncio import AsyncSession
+from database import create_db_and_tables
 from rotas import autor, boletim, declarante
 
 @asynccontextmanager
@@ -14,7 +11,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+
 app.include_router(autor.router)
 app.include_router(boletim.router)
 app.include_router(declarante.router)
-
