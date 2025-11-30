@@ -1,9 +1,8 @@
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import date
 from enum import Enum
-from .Declarante_Boletim import DeclaranteBoletim
 from models.autor import Autor
-
+from models.declarante_boletim import DeclaranteBoletim
 
 class TipoOcorrencia(str, Enum):
     FURTO = "Furto"
@@ -49,19 +48,21 @@ class StatusBoletim(Enum):
     CONCLUIDO = "Concluído"                    
     CANCELADO = "Cancelado"                   
     AGUARDANDO_VALIDACAO = "Aguardando Validação"
-    REABERTO = "Reaberto"  
+    REABERTO = "Reaberto"
 
-class BoletimOcorrenciaBase(SQLModel):
-    
+class BoletimOcorrencia(SQLModel, table=True):
+    __tablename__ = "boletimocorrencia"
+
+    id_boletim: int | None = Field(default=None, primary_key=True)
     data_registro: date
     tipo_ocorrencia: TipoOcorrencia
     descricao: str
     status: StatusBoletim
     autor_id: int = Field(foreign_key = "autor.id_autor")
 
+    autor: Autor = Relationship(back_populates="boletins")
 
-class BoletimOcorrencia(BoletimOcorrenciaBase, table=True):
-    __tablename__ = 'boletimocorrencia'
-    id_boletim: int | None = Field(default_factory=None, primary_key=True)
-    autor: Autor = Relationship(back_populates="boletimOcorrencia")
-    declarantes: list["Declarante"] = Relationship(back_populates="boletins", link_model=DeclaranteBoletim)
+    declarantes: list["Declarante"] = Relationship(
+        back_populates="boletins",
+        link_model=DeclaranteBoletim
+    )

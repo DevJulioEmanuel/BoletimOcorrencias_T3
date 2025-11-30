@@ -9,8 +9,8 @@ from sqlmodel import SQLModel
 
 from models.autor import Autor
 from models.declarante import Declarante
-from models.BoletimOcorrencia import BoletimOcorrencia
-from models.Declarante_Boletim import DeclaranteBoletim
+from models.boletim_ocorrencia import BoletimOcorrencia
+from models.declarante_boletim import DeclaranteBoletim
 
 from alembic import context
 
