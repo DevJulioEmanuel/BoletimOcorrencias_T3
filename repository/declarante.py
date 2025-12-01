@@ -115,7 +115,7 @@ class DeclaranteRepository:
             raise e
 
 
-    async def declarantes_reincidentes_por_tipo(self, session: AsyncSession):
+    async def declarantes_reincidentes_por_tipo(self, offset: int, limit: int, session: AsyncSession):
 
         stmt_ids = (
             select(Declarante.id_declarante)
@@ -123,6 +123,7 @@ class DeclaranteRepository:
             .join(BoletimOcorrencia, BoletimOcorrencia.id_boletim == DeclaranteBoletim.boletim_id)
             .group_by(Declarante.id_declarante, BoletimOcorrencia.tipo_ocorrencia)
             .having(func.count(BoletimOcorrencia.id_boletim) > 1)
+            .offset(offset).limit(limit)
         )
 
         result_ids = await session.exec(stmt_ids)
@@ -137,7 +138,7 @@ class DeclaranteRepository:
 
         return result_full.all()
 
-    async def declarantes_sem_boletim(self, session: AsyncSession):
+    async def declarantes_sem_boletim(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista declarantes que não estão associados a nenhum boletim de ocorrência (usa OUTER JOIN).
 
@@ -150,12 +151,13 @@ class DeclaranteRepository:
             select(Declarante)
             .outerjoin(DeclaranteBoletim)
             .where(DeclaranteBoletim.declarante_id == None)
+            .offset(offset).limit(limit)
         )
 
         result = await session.exec(stmt)
         return result.all()
 
-    async def ranking_declarantes(self, session: AsyncSession):
+    async def ranking_declarantes(self, offset: int, limit: int, session: AsyncSession):
         """
         Calcula o ranking dos declarantes com base no total de boletins de ocorrência em que foram envolvidos.
 
@@ -172,6 +174,7 @@ class DeclaranteRepository:
             .join(DeclaranteBoletim)
             .group_by(Declarante.id_declarante)
             .order_by(func.count(DeclaranteBoletim.boletim_id).desc())
+            .offset(offset).limit(limit)
         )
 
         result = await session.exec(stmt)

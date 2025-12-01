@@ -52,10 +52,12 @@ async def read_autores(
     description="busca os autores que mais registraram boletins"
 ) 
 async def ranking_autores_route(
+    offset: int = 0, 
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
     try:
-        return await service.ranking_autores(session)
+        return await service.ranking_autores(offset, limit, session)
         
     except SQLAlchemyError as e:
         raise HTTPException(

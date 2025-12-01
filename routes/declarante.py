@@ -46,9 +46,11 @@ async def read_declarantes(
     description="busca todos os declarantes sem boletim"    
 )
 async def declarantes_sem_boletim(
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
-    return await service.declarantes_sem_boletim(session)
+    return await service.declarantes_sem_boletim(offset, limit, session)
 
 @router.get(
     path="/ranking",
@@ -57,9 +59,11 @@ async def declarantes_sem_boletim(
     description="busca declarantes que possuem mais boletins registrados"    
 )
 async def ranking_declarantes(
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
-    return await service.ranking_declarantes(session)
+    return await service.ranking_declarantes(offset, limit, session)
 
 @router.get(
     path="/reincidentes/tipo",
@@ -68,9 +72,11 @@ async def ranking_declarantes(
     description="busca declarantes por reincidentes"    
 )
 async def declarantes_reincidentes_por_tipo(
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
-    return await service.declarantes_reincidentes_por_tipo(session)
+    return await service.declarantes_reincidentes_por_tipo(offset, limit, session)
 
 @router.get(
     path="/{id_declarante}",

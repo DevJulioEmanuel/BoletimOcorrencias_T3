@@ -99,7 +99,7 @@ class AutorService:
         except IntegrityError as e:
             raise IntegrityError(f"Erro: {e}", None, None)
 
-    async def ranking_autores(self, session: AsyncSession) -> AutorRanking:
+    async def ranking_autores(self, offset: int, limit: int, session: AsyncSession) -> AutorRanking:
         """
         Gera o ranking de autores baseado em algum critério definido (ex: número de boletins).
 
@@ -108,4 +108,4 @@ class AutorService:
         :return: O ranking de autores.
         :rtype: AutorRanking
         """
-        return await self.repo.ranking_autores(session)
+        return await self.repo.ranking_autores(offset, limit, session)

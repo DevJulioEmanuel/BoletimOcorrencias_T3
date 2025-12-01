@@ -136,7 +136,7 @@ class BoletimService:
             )
 
 
-    async def listar_completos(self, session: AsyncSession):
+    async def listar_completos(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista todos os boletins de ocorrência que estão 'completos' (critério definido no repositório).
 
@@ -145,9 +145,9 @@ class BoletimService:
         :return: Uma lista de boletins de ocorrência considerados completos.
         :rtype: list[BoletimOcorrencia]
         """
-        return await self.repo.listar_boletins_completos(session)
+        return await self.repo.listar_boletins_completos(offset, limit, session)
 
-    async def boletins_com_mais_de_um_declarante(self, session: AsyncSession):
+    async def boletins_com_mais_de_um_declarante(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista boletins de ocorrência que possuem mais de um declarante associado.
 
@@ -156,9 +156,9 @@ class BoletimService:
         :return: Uma lista de boletins com múltiplos declarantes.
         :rtype: list[BoletimOcorrencia]
         """
-        return await self.repo.boletins_com_mais_de_um_declarante(session)
+        return await self.repo.boletins_com_mais_de_um_declarante(offset, limit, session)
 
-    async def boletins_por_posto(self, posto: str, session: AsyncSession):
+    async def boletins_por_posto(self, posto: str, offset: int, limit: int, session: AsyncSession):
         """
         Lista boletins de ocorrência registrados por um posto específico.
 
@@ -169,9 +169,9 @@ class BoletimService:
         :return: Uma lista de boletins associados ao posto.
         :rtype: list[BoletimOcorrencia]
         """
-        return await self.repo.boletins_por_posto(posto, session)
+        return await self.repo.boletins_por_posto(posto, offset, limit, session)
 
-    async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, session: AsyncSession):
+    async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, offset: int, limit: int, session: AsyncSession):
         """
         Lista boletins de ocorrência que estão abertos, foram registrados em uma lotação específica e possuem múltiplos declarantes.
 
@@ -182,4 +182,4 @@ class BoletimService:
         :return: Uma lista de boletins que atendem aos critérios.
         :rtype: list[BoletimOcorrencia]
         """
-        return await self.repo.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)
+        return await self.repo.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, offset, limit, session)

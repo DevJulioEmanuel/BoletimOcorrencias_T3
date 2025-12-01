@@ -32,8 +32,8 @@ async def create_boletim(
     description="busca todos os boletins de ocorrencia registrados de forma paginada"
 )
 async def list_boletins(
-    offset: int,
-    limit: int,
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
     return await service.list_boletins(offset, limit, session)
@@ -45,9 +45,11 @@ async def list_boletins(
     description="busca boletins de ocorrencia com sua estrutura completa"
 )
 async def listar_completos(
-    session: AsyncSession = Depends(get_session)
+    offset: int = 0,
+    limit: int = 10,
+    session: AsyncSession = Depends(get_session),
 ):
-    return await service.listar_completos(session)
+    return await service.listar_completos(offset, limit, session)
 
 
 @router.get(
@@ -57,10 +59,11 @@ async def listar_completos(
     description="busca boletins de ocorrencia que tem multiplos declarantes"
 )
 async def boletins_com_mais_de_um_declarante(
-   
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
-    return await service.boletins_com_mais_de_um_declarante(session)
+    return await service.boletins_com_mais_de_um_declarante(offset, limit, session)
 
 
 @router.get(
@@ -70,11 +73,12 @@ async def boletins_com_mais_de_um_declarante(
     description="busca boletins de ocorrencia por posto especifico"    
 )
 async def boletins_por_posto(
-   
     posto: str,
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
-    return await service.boletins_por_posto(posto, session)
+    return await service.boletins_por_posto(posto, offset, limit, session)
 
 
 @router.get(
@@ -85,7 +89,8 @@ async def boletins_por_posto(
 )
 async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
     lotacao: str,
-
+    offset: int = 0,
+    limit: int = 10,
     session: AsyncSession = Depends(get_session)
 ):
     return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)

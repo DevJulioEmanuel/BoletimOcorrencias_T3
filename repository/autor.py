@@ -118,7 +118,7 @@ class AutorRepository:
         return True
 
 
-    async def ranking_autores(self, session: AsyncSession):
+    async def ranking_autores(self, offset:int, limit: int, session: AsyncSession):
         """
         Calcula o ranking dos autores com base no total de boletins de ocorrência que registraram.
 
@@ -135,6 +135,7 @@ class AutorRepository:
             .join(BoletimOcorrencia)
             .group_by(Autor.id_autor)
             .order_by(func.count(BoletimOcorrencia.id_boletim).desc())
+            .offset(offset).limit(limit)
         )
 
         result = await session.exec(stmt)

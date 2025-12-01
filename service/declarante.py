@@ -145,7 +145,7 @@ class DeclaranteService:
                 detail=f"Erro ao deletar: {e}"
             )
 
-    async def declarantes_reincidentes_por_tipo(self, session: AsyncSession):
+    async def declarantes_reincidentes_por_tipo(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista declarantes que são considerados 'reincidentes' e agrupa por tipo de ocorrência.
 
@@ -154,9 +154,9 @@ class DeclaranteService:
         :return: Uma lista de declarantes reincidentes agrupados.
         :rtype: list
         """
-        return await self.repo.declarantes_reincidentes_por_tipo(session)
+        return await self.repo.declarantes_reincidentes_por_tipo(offset, limit, session)
 
-    async def declarantes_sem_boletim(self, session: AsyncSession):
+    async def declarantes_sem_boletim(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista declarantes que não possuem nenhum boletim de ocorrência associado.
 
@@ -165,9 +165,9 @@ class DeclaranteService:
         :return: Uma lista de declarantes sem boletins.
         :rtype: list[Declarante]
         """
-        return await self.repo.declarantes_sem_boletim(session)
+        return await self.repo.declarantes_sem_boletim(offset, limit, session)
 
-    async def ranking_declarantes(self, session: AsyncSession):
+    async def ranking_declarantes(self, offset: int, limit: int, session: AsyncSession):
         """
         Gera o ranking de declarantes baseado em algum critério definido (ex: número de participações em boletins).
 
@@ -176,4 +176,4 @@ class DeclaranteService:
         :return: O ranking de declarantes.
         :rtype: list
         """
-        return await self.repo.ranking_declarantes(session)
+        return await self.repo.ranking_declarantes(offset, limit, session)

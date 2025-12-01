@@ -150,7 +150,7 @@ class BoletimRepository:
             raise e
 
 
-    async def listar_boletins_completos(self, session: AsyncSession):
+    async def listar_boletins_completos(self, offset: int, limit: int, session: AsyncSession):
         """
         Lista todos os boletins de ocorrência, carregando ansiosamente os dados do autor e dos declarantes.
 
@@ -160,11 +160,11 @@ class BoletimRepository:
         :rtype: list[dict]
         """
         stmt = (
-            select (BoletimOcorrencia)
+            select(BoletimOcorrencia)
             .options(
                 selectinload(BoletimOcorrencia.autor),
                 selectinload(BoletimOcorrencia.declarantes),
-            ))
+            ).offset(offset).limit(limit))
             
 
         result = await session.exec(stmt)
@@ -185,7 +185,7 @@ class BoletimRepository:
 
 
 
-    async def boletins_com_mais_de_um_declarante(self, session: AsyncSession):
+    async def boletins_com_mais_de_um_declarante(self, offset: int, limit: int, session: AsyncSession):
         """
         Consulta boletins de ocorrência que possuem mais de um declarante, retornando o boletim e a contagem.
 
@@ -202,6 +202,8 @@ class BoletimRepository:
             .join(DeclaranteBoletim)
             .group_by(BoletimOcorrencia.id_boletim)
             .having(func.count(DeclaranteBoletim.declarante_id) > 1)
+            .offset(offset)
+            .limit(limit)
         )
 
         result = await session.exec(stmt)
@@ -218,7 +220,7 @@ class BoletimRepository:
         return response
 
 
-    async def boletins_por_posto(self, posto: str, session: AsyncSession):
+    async def boletins_por_posto(self, posto: str, offset: int, limit: int, session: AsyncSession):
         """
         Busca boletins de ocorrência registrados por autores de um posto específico.
 
@@ -233,11 +235,13 @@ class BoletimRepository:
         select(BoletimOcorrencia)
         .join(BoletimOcorrencia.autor)
         .where(Autor.posto == posto)
+        .offset(offset)
+        .limit(limit)
         )
         result = await session.exec(stmt)
         return result.all()
 
-    async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, session: AsyncSession):
+    async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, offset: int, limit: int, session: AsyncSession):
         """
         Busca boletins registrados com status 'REGISTRADO' por autores de uma lotação específica e que tenham mais de um declarante.
 
@@ -270,6 +274,8 @@ class BoletimRepository:
                 Autor.id_autor
             )
             .having(func.count(DeclaranteBoletim.declarante_id) > 1)
+            .offset(offset)
+            .limit(limit)
         )
 
         result = await session.exec(stmt)
