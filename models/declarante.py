@@ -3,7 +3,7 @@ from datetime import date
 from enum import Enum
 from models.declarante_boletim import DeclaranteBoletim
 
-class TipoEnvolvimento(str, Enum):
+class TipoEnvolvimento(Enum):
     DECLARANTE = "Declarante"
     VITIMA = "Vítima"
     AUTOR = "Autor_Crime"
@@ -21,7 +21,7 @@ class Declarante(SQLModel, table=True):
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
 
-    declarante_boletim: list["DeclaranteBoletim"] = Relationship(back_populates="declarante")
+    # declarante_boletim: list["DeclaranteBoletim"] = Relationship(back_populates="declarante")
 
     boletins: list["BoletimOcorrencia"] = Relationship(
         back_populates="declarantes",

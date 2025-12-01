@@ -62,9 +62,9 @@ class BoletimOcorrencia(SQLModel, table=True):
 
     autor: Autor = Relationship(back_populates="boletins")
 
-    boletim_declarantes: list["DeclaranteBoletim"] = Relationship(
-        back_populates="boletim"
-    )
+    # boletim_declarantes: list["DeclaranteBoletim"] = Relationship(
+    #     back_populates="boletim"
+    # )
 
     declarantes: list["Declarante"] = Relationship(
         back_populates="boletins",

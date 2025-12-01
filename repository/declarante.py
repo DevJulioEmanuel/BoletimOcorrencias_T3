@@ -46,10 +46,9 @@ class DeclaranteRepository:
         :return: Uma lista de objetos Declarante.
         :rtype: list[Declarante]
         """
-        result = await session.execute(
-            select(Declarante).offset(offset).limit(limit)
-        )
-        return result.scalars().all()
+
+        stmt = select(Declarante).offset(offset).limit(limit)
+        return await session.exec(stmt)
 
     async def get_by_id(self, id_declarante: int, session: AsyncSession):
         """
@@ -117,28 +116,26 @@ class DeclaranteRepository:
 
 
     async def declarantes_reincidentes_por_tipo(self, session: AsyncSession):
-        """
-        Busca declarantes que participaram de mais de um boletim para o mesmo tipo de ocorrência.
 
-        :param session: Sessão assíncrona do banco de dados.
-        :type session: AsyncSession
-        :return: Uma lista de tuplas contendo o nome do declarante, o tipo de ocorrência e o total de boletins.
-        :rtype: list[tuple[str, str, int]]
-        """
-        stmt = (
-            select(
-                Declarante.nome,
-                BoletimOcorrencia.tipo_ocorrencia,
-                func.count(BoletimOcorrencia.id_boletim).label("total")
-            )
+        stmt_ids = (
+            select(Declarante.id_declarante)
             .join(DeclaranteBoletim, DeclaranteBoletim.declarante_id == Declarante.id_declarante)
             .join(BoletimOcorrencia, BoletimOcorrencia.id_boletim == DeclaranteBoletim.boletim_id)
             .group_by(Declarante.id_declarante, BoletimOcorrencia.tipo_ocorrencia)
             .having(func.count(BoletimOcorrencia.id_boletim) > 1)
         )
 
-        result = await session.exec(stmt)
-        return result.all()
+        result_ids = await session.exec(stmt_ids)
+
+        ids = set(result_ids.all())
+
+        if not ids:
+            return []
+
+        stmt_full = select(Declarante).where(Declarante.id_declarante.in_(ids))
+        result_full = await session.exec(stmt_full)
+
+        return result_full.all()
 
     async def declarantes_sem_boletim(self, session: AsyncSession):
         """

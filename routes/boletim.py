@@ -57,6 +57,7 @@ async def listar_completos(
     description="busca boletins de ocorrencia que tem multiplos declarantes"
 )
 async def boletins_com_mais_de_um_declarante(
+   
     session: AsyncSession = Depends(get_session)
 ):
     return await service.boletins_com_mais_de_um_declarante(session)
@@ -69,6 +70,7 @@ async def boletins_com_mais_de_um_declarante(
     description="busca boletins de ocorrencia por posto especifico"    
 )
 async def boletins_por_posto(
+   
     posto: str,
     session: AsyncSession = Depends(get_session)
 ):
@@ -83,6 +85,7 @@ async def boletins_por_posto(
 )
 async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
     lotacao: str,
+
     session: AsyncSession = Depends(get_session)
 ):
     return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)

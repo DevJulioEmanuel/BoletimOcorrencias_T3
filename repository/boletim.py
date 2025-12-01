@@ -160,12 +160,12 @@ class BoletimRepository:
         :rtype: list[dict]
         """
         stmt = (
-            select(BoletimOcorrencia)
+            select (BoletimOcorrencia)
             .options(
                 selectinload(BoletimOcorrencia.autor),
                 selectinload(BoletimOcorrencia.declarantes),
-            )
-        )
+            ))
+            
 
         result = await session.exec(stmt)
         boletins = result.all()
