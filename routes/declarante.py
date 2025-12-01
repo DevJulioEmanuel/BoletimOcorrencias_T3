@@ -62,6 +62,17 @@ async def ranking_declarantes(
     return await service.ranking_declarantes(session)
 
 @router.get(
+    path="/reincidentes/tipo",
+    status_code=status.HTTP_200_OK,
+    response_model=list[Declarante],
+    description="busca declarantes por reincidentes"    
+)
+async def declarantes_reincidentes_por_tipo(
+    session: AsyncSession = Depends(get_session)
+):
+    return await service.declarantes_reincidentes_por_tipo(session)
+
+@router.get(
     path="/{id_declarante}",
     response_model=Declarante,
     status_code=status.HTTP_200_OK,
@@ -96,14 +107,4 @@ async def update_declarante(
 async def delete_declarante(id_declarante: int, session: AsyncSession = Depends(get_session)):
     return await service.delete_declarante(id_declarante, session)
 
-@router.get(
-    path="/reincidentes/tipo",
-    status_code=status.HTTP_200_OK,
-    response_model=list[Declarante],
-    description="busca declarantes por reincidentes"    
-)
-async def declarantes_reincidentes_por_tipo(
-    session: AsyncSession = Depends(get_session)
-):
-    return await service.declarantes_reincidentes_por_tipo(session)
 
