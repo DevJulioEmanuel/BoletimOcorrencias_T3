@@ -1,9 +1,7 @@
 from fastapi import APIRouter, Depends, status
-from sqlmodel.ext.asyncio.session import AsyncSession
 
 from models.boletim_ocorrencia import BoletimOcorrencia
 from schemas.boletim import BoletimOcorrenciaBase
-from core.db import get_session
 from service.boletim import BoletimService
 from schemas.boletim import BoletimOcorrenciaCompleto, BoletimOcorrenciaPorDeclarantes, BoletimOcorrencia, BoletimOcorrenciaResumo
 

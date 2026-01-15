@@ -1,4 +1,5 @@
-from models.autor import *
-from models.boletim_ocorrencia import *
-from models.declarante_boletim import *
-from models.declarante import *
+from .autor import Autor
+from .declarante import Declarante
+from .boletim_ocorrencia import BoletimOcorrencia
+
+__all__ = ["Autor", "Declarante", "BoletimOcorrencia"]

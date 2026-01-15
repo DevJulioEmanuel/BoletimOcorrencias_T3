@@ -1,8 +1,31 @@
+import os
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from motor.motor_asyncio import AsyncIOMotorClient
+from beanie import init_beanie
+from dotenv import load_dotenv
 
+from models import Autor, Declarante, BoletimOcorrencia
 from routes import autor, boletim, declarante
 
-app = FastAPI()
+load_dotenv()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
+    db_name = os.getenv("DB_NAME")
+    
+    await init_beanie(
+        database=client[db_name],
+        document_models=[
+            Autor,
+            Declarante,
+            BoletimOcorrencia
+        ]
+    )
+    yield
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(autor.router)
 app.include_router(boletim.router)

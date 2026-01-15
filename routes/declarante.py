@@ -1,8 +1,6 @@
 from fastapi import APIRouter, Depends, Query, status
-from sqlmodel.ext.asyncio.session import AsyncSession
 from models.declarante import Declarante
 from schemas.declarante import DeclaranteBase, RankingDeclarante
-from core.db import get_session
 from service.declarante import DeclaranteService
 
 

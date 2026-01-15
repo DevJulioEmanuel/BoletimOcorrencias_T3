@@ -1,15 +1,16 @@
 from datetime import date
-from sqlmodel import SQLModel
+from pydantic import BaseModel
 from models.declarante import TipoEnvolvimento
 
-class DeclaranteBase(SQLModel):
+from pydantic import BaseModel
+from typing import Optional
+
+class DeclaranteBase(BaseModel):
     nome: str
     cpf: str
-    data_nascimento: date
     endereco: str
-    tipo_envolvimento: TipoEnvolvimento
+    tipo_envolvimento: str 
 
-class RankingDeclarante(SQLModel):
-    nome: str
-    total: int
+class DeclaranteCreate(DeclaranteBase):
+    pass
 

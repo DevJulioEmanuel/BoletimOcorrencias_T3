@@ -1,11 +1,9 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
-from repository.declarante import DeclaranteRepository
-from fastapi import HTTPException, status
-from sqlmodel.ext.asyncio.session import AsyncSession
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from repository.declarante import DeclaranteRepository
+from fastapi import HTTPException, status
+
+
 from schemas.declarante import DeclaranteBase
+from schemas.declarante import DeclaranteCreate
 
 class DeclaranteService:
 

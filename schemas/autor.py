@@ -1,11 +1,12 @@
-from sqlmodel import SQLModel
+from pydantic import BaseModel
 
-class AutorBase(SQLModel):
+class AutorBase(BaseModel):
     nome: str
     matricula: str
     posto: str
     lotacao: str
 
-class AutorRanking(SQLModel):
-    nome: str
-    total_boletins: int
+class AutorResponse(AutorBase):
+    id: str 
+    
+    model_config = {"from_attributes": True}

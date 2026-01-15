@@ -1,12 +1,10 @@
-from sqlmodel import SQLModel, Field, Relationship
+from beanie import Document
 
-class Autor(SQLModel, table=True):
-    __tablename__ = "autor"
-
-    id_autor: int | None = Field(default=None, primary_key=True)
+class Autor(Document):
     nome: str
     matricula: str
     posto: str
     lotacao: str
 
-    boletins: list["BoletimOcorrencia"] = Relationship(back_populates="autor")
+    class Settings:
+        name = "autores"

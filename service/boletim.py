@@ -1,12 +1,8 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
-from repository.boletim import BoletimRepository
 from fastapi import HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 
 from schemas.boletim import BoletimOcorrenciaBase
-from sqlmodel.ext.asyncio.session import AsyncSession
 
-from repository.boletim import BoletimRepository
 
 
 class BoletimService:

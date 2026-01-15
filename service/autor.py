@@ -1,7 +1,9 @@
-from sqlmodel.ext.asyncio.session import AsyncSession
-from repository.autor import AutorRepository
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from schemas.autor import AutorBase, AutorRanking
+from typing import List, Optional
+from beanie import PydanticObjectId
+from pymongo.errors import DuplicateKeyError
+
+from models.autor import Autor 
+from schemas.autor import AutorBase
 
 
 class AutorService:
@@ -10,9 +12,9 @@ class AutorService:
         """
         Inicializa o serviço de Autor, instanciando o repositório correspondente.
         """
-        self.repo = AutorRepository()
+        #self.repo = AutorRepository()
 
-    async def create_autor(self, autor: AutorBase, session: AsyncSession):
+    async def create_autor(self, autor: AutorBase):
         """
         Cria um novo autor no banco de dados.
 
@@ -26,13 +28,14 @@ class AutorService:
         :rtype: Autor
         """
         try:
-            return await self.repo.create(autor, session)
+            autor = Autor(**autor.model_dump())
+            return await autor.create()
         except IntegrityError:
             raise IntegrityError("Matrícula ou ID do Autor já existem.", None, None)
         except SQLAlchemyError as e:
             raise SQLAlchemyError(f"Erro no banco de dados: {e}", None, None)
 
-    async def list_autores(self, offset: int, limit: int, session: AsyncSession):
+    async def list_autores(self, offset: int, limit: int):
         """
         Lista autores com paginação.
 
@@ -45,7 +48,7 @@ class AutorService:
         :return: Uma lista de objetos Autor.
         :rtype: list[Autor]
         """
-        return await self.repo.list(offset, limit, session)
+        return await Autor.find_all().skip(offset).limit(limit).to_list()
 
     async def get_autor(self, id_autor: int, session: AsyncSession):
         """
@@ -99,13 +102,13 @@ class AutorService:
         except IntegrityError as e:
             raise IntegrityError(f"Erro: {e}", None, None)
 
+    """ 
     async def ranking_autores(self, offset: int, limit: int, session: AsyncSession) -> AutorRanking:
-        """
         Gera o ranking de autores baseado em algum critério definido (ex: número de boletins).
 
         :param session: Sessão assíncrona do banco de dados para a operação.
         :type session: AsyncSession
         :return: O ranking de autores.
         :rtype: AutorRanking
-        """
         return await self.repo.ranking_autores(offset, limit, session)
+    """

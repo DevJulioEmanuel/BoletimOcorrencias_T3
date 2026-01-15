@@ -1,9 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Query, status
-from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from sqlalchemy.ext.asyncio import AsyncSession
 from models.autor import Autor
-from schemas.autor import AutorBase, AutorRanking
-from core.db import get_session
+from schemas.autor import AutorBase # AutorRanking
 from service.autor import AutorService
 
 router = APIRouter(
@@ -20,12 +17,10 @@ service = AutorService()
     status_code=status.HTTP_201_CREATED,
     description="cria um autor"
 )
-async def create_autor(
-    autor: AutorBase,
-    session: AsyncSession = Depends(get_session)
-):
+async def create_autor(autor: AutorBase):
     try:
-        return await service.create_autor(autor, session)
+        novo_autor = await service.create_autor(autor)
+        return novo_autor
     except IntegrityError as e:
         raise HTTPException(status_code=409, detail=str(e))
     except SQLAlchemyError as e:
@@ -41,10 +36,10 @@ async def create_autor(
 async def read_autores(
     offset: int = 0,
     limit: int = Query(default=10, le=100),
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.list_autores(offset, limit, session)
+    return await service.list_autores(offset, limit)
 
+"""
 @router.get(
     path="/ranking",
     response_model=list[AutorRanking],
@@ -121,4 +116,4 @@ async def delete_autor(id_autor: int, session: AsyncSession = Depends(get_sessio
         return {"ok": True, "message": f"Autor com ID {id_autor} deletado com sucesso."}
     except IntegrityError as e:
         raise HTTPException(status_code=409, detail=str(e))
-    
+    """
