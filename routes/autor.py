@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, status
 from schemas.autor import AutorCreate, AutorResponse
 from service.autor import AutorService
 
@@ -28,7 +28,7 @@ async def create_autor(autor: AutorCreate):
 )
 async def read_autores(
     offset: int = 0,
-    limit: int = Query(default=10, le=100),
+    limit: int = 50,
 ):
     return await service.list_autores(offset, limit)
 

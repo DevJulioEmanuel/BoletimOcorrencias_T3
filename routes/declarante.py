@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, status
 from schemas.declarante import DeclaranteCreate, DeclaranteResponse, DeclaranteNumerosDeRegistros
 from service.declarante import DeclaranteService
 
@@ -30,7 +30,7 @@ async def create_declarante(
 )
 async def read_declarantes(
     offset: int = 0,
-    limit: int = Query(default=10, le=100),
+    limit: int = 50,
 ):
     return await service.list_declarantes(offset, limit)
 
@@ -42,7 +42,7 @@ async def read_declarantes(
 )
 async def declarantes_sem_boletim(
     offset: int = 0,
-    limit: int = 10,
+    limit: int = 50,
 ):
     return await service.declarantes_sem_boletim(offset, limit)
 
@@ -54,7 +54,7 @@ async def declarantes_sem_boletim(
 )
 async def ranking_declarantes(
     offset: int = 0,
-    limit: int = 10,
+    limit: int = 50,
 ):
     return await service.ranking_declarantes(offset, limit)
 
@@ -66,7 +66,7 @@ async def ranking_declarantes(
 )
 async def declarantes_reincidentes_por_tipo(
     offset: int = 0,
-    limit: int = 10,
+    limit: int = 50,
 ):
     return await service.declarantes_reincidentes_por_tipo(offset, limit)
 

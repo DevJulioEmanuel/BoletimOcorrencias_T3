@@ -13,9 +13,6 @@ class BoletimService:
 
         :param boletim: Dados básicos do boletim a ser criado.
         :type boletim: BoletimOcorrenciaCreate
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
-        :raises HTTPException: Status 500 se ocorrer um erro no banco de dados.
         :return: O objeto Boletim de Ocorrência criado.
         :rtype: BoletimOcorrencia
         """
@@ -29,8 +26,6 @@ class BoletimService:
         :type offset: int
         :param limit: Número máximo de boletins a serem retornados.
         :type limit: int
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
         :return: Uma lista de objetos BoletimOcorrencia.
         :rtype: list[BoletimOcorrencia]
         """
@@ -42,9 +37,6 @@ class BoletimService:
 
         :param id_boletim: O ID do boletim a ser buscado.
         :type id_boletim: int
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
-        :raises HTTPException: Status 404 se o boletim não for encontrado.
         :return: O objeto Boletim de Ocorrência encontrado.
         :rtype: BoletimOcorrencia
         """
@@ -57,10 +49,6 @@ class BoletimService:
         :type id_boletim: int
         :param boletim: Novos dados básicos do boletim.
         :type boletim: BoletimOcorrenciaCreate
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
-        :raises HTTPException: Status 404 se o boletim não for encontrado.
-        :raises HTTPException: Status 500 se ocorrer um erro no banco de dados durante a atualização.
         :return: O objeto Boletim de Ocorrência atualizado.
         :rtype: BoletimOcorrencia
         """
@@ -72,12 +60,8 @@ class BoletimService:
 
         :param id_boletim: O ID do boletim a ser deletado.
         :type id_boletim: int
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
-        :raises HTTPException: Status 404 se o boletim não for encontrado.
-        :raises HTTPException: Status 500 se ocorrer um erro no banco de dados durante a deleção.
-        :return: Uma mensagem de confirmação da deleção.
-        :rtype: dict
+        :return: O objeto Boletim que foi deletado.
+        :rtype: BoletimOcorrenciaResponse
         """
         pass
 
@@ -85,10 +69,8 @@ class BoletimService:
         """
         Lista boletins de ocorrência que possuem mais de um declarante associado.
 
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
         :return: Uma lista de boletins com múltiplos declarantes.
-        :rtype: list[BoletimOcorrencia]
+        :rtype: list[BoletimOcorrenciaResponse]
         """
         pass
 
@@ -98,10 +80,8 @@ class BoletimService:
 
         :param posto: O nome ou identificador do posto.
         :type posto: str
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
         :return: Uma lista de boletins associados ao posto.
-        :rtype: list[BoletimOcorrencia]
+        :rtype: list[BoletimOcorrenciaResponse]
         """
         pass
     async def boletins_abertos_por_lotacao_com_multiplos_declarantes(self, lotacao: str, offset: int, limit: int) -> list[BoletimOcorrenciaResponse]:
@@ -110,10 +90,8 @@ class BoletimService:
 
         :param lotacao: O nome ou identificador da lotação.
         :type lotacao: str
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :type session: AsyncSession
         :return: Uma lista de boletins que atendem aos critérios.
-        :rtype: list[BoletimOcorrencia]
+        :rtype: list[BoletimOcorrenciaResponse]
         """
 
         pass
