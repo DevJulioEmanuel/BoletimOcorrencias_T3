@@ -1,16 +1,17 @@
-from datetime import date
 from pydantic import BaseModel
 from models.declarante import TipoEnvolvimento
 
 from pydantic import BaseModel
-from typing import Optional
 
-class DeclaranteBase(BaseModel):
+class DeclaranteCreate(BaseModel):
     nome: str
     cpf: str
     endereco: str
-    tipo_envolvimento: str 
+    tipo_envolvimento: TipoEnvolvimento 
 
-class DeclaranteCreate(DeclaranteBase):
-    pass
+class DeclaranteResponse(DeclaranteCreate):
+    id: str
+
+class DeclaranteNumerosDeRegistros(DeclaranteResponse):
+    quantidade_registros: int
 

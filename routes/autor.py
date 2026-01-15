@@ -1,6 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends, Query, status
-from models.autor import Autor
-from schemas.autor import AutorBase # AutorRanking
+from fastapi import APIRouter, Query, status
+from schemas.autor import AutorCreate, AutorResponse
 from service.autor import AutorService
 
 router = APIRouter(
@@ -13,23 +12,17 @@ service = AutorService()
 
 @router.post(
     path="/",
-    response_model=Autor,
+    response_model=AutorResponse,
     status_code=status.HTTP_201_CREATED,
     description="cria um autor"
 )
-async def create_autor(autor: AutorBase):
-    try:
-        novo_autor = await service.create_autor(autor)
-        return novo_autor
-    except IntegrityError as e:
-        raise HTTPException(status_code=409, detail=str(e))
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
+async def create_autor(autor: AutorCreate):
+    return await service.create_autor()
 
 
 @router.get(
     path="/",
-    response_model=list[Autor],
+    response_model=list[AutorResponse],
     status_code=status.HTTP_200_OK,
     description="busca os autores cadastrados"        
 )

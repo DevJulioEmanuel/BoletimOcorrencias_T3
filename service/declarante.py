@@ -1,9 +1,5 @@
 
-from fastapi import HTTPException, status
-
-
-from schemas.declarante import DeclaranteBase
-from schemas.declarante import DeclaranteCreate
+from schemas.declarante import DeclaranteCreate, DeclaranteResponse, DeclaranteNumerosDeRegistros
 
 class DeclaranteService:
 
@@ -11,14 +7,13 @@ class DeclaranteService:
         """
         Inicializa o serviço de Declarante, instanciando o repositório correspondente.
         """
-        self.repo = DeclaranteRepository()
 
-    async def create_declarante(self, declarante: DeclaranteBase, session: AsyncSession):
+    async def create_declarante(self, declarante: DeclaranteCreate) -> DeclaranteResponse:
         """
         Cria um novo declarante no banco de dados.
 
         :param declarante: Dados básicos do declarante a ser criado.
-        :type declarante: DeclaranteBase
+        :type declarante: DeclaranteCreate
         :param session: Sessão assíncrona do banco de dados para a operação.
         :type session: AsyncSession
         :raises HTTPException: Status 409 se houver erro de integridade (ex: CPF já existe).
@@ -26,20 +21,9 @@ class DeclaranteService:
         :return: O objeto Declarante criado.
         :rtype: Declarante
         """
-        try:
-            return await self.repo.create(declarante, session)
-        except IntegrityError:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Erro de integridade: CPF já existe ou outra restrição foi violada."
-            )
-        except SQLAlchemyError as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro no banco de dados: {e}"
-            )
+        pass
 
-    async def list_declarantes(self, offset: int, limit: int, session: AsyncSession):
+    async def list_declarantes(self, offset: int, limit: int) -> list[DeclaranteResponse]:
         """
         Lista declarantes com paginação.
 
@@ -52,9 +36,9 @@ class DeclaranteService:
         :return: Uma lista de objetos Declarante.
         :rtype: list[Declarante]
         """
-        return await self.repo.list_all(offset, limit, session)
+        pass
 
-    async def get_declarante(self, id_declarante: int, session: AsyncSession):
+    async def get_declarante(self, id_declarante: int) -> DeclaranteResponse:
         """
         Busca um declarante pelo seu ID.
 
@@ -66,24 +50,16 @@ class DeclaranteService:
         :return: O objeto Declarante encontrado.
         :rtype: Declarante
         """
-        declarante = await self.repo.get_by_id(id_declarante, session)
+        pass
 
-        if not declarante:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Declarante não encontrado"
-            )
-
-        return declarante
-
-    async def update_declarante(self, id_declarante: int, data: DeclaranteBase, session: AsyncSession):
+    async def update_declarante(self, id_declarante: int, data: DeclaranteCreate) -> DeclaranteResponse:
         """
         Atualiza os dados de um declarante existente.
 
         :param id_declarante: O ID do declarante a ser atualizado.
         :type id_declarante: int
         :param data: Novos dados básicos do declarante.
-        :type data: DeclaranteBase
+        :type data: DeclaranteCreate
         :param session: Sessão assíncrona do banco de dados para a operação.
         :type session: AsyncSession
         :raises HTTPException: Status 404 se o declarante não for encontrado.
@@ -92,28 +68,9 @@ class DeclaranteService:
         :return: O objeto Declarante atualizado.
         :rtype: Declarante
         """
-        db_declarante = await self.repo.get_by_id(id_declarante, session)
+        pass
 
-        if not db_declarante:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Declarante não encontrado"
-            )
-
-        try:
-            return await self.repo.update(db_declarante, data, session)
-        except IntegrityError:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Erro de integridade (ex: CPF duplicado)."
-            )
-        except SQLAlchemyError as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao atualizar no banco: {e}"
-            )
-
-    async def delete_declarante(self, id_declarante: int, session: AsyncSession):
+    async def delete_declarante(self, id_declarante: int) -> DeclaranteResponse:
         """
         Deleta um declarante pelo seu ID.
 
@@ -126,24 +83,9 @@ class DeclaranteService:
         :return: Uma mensagem de confirmação da deleção.
         :rtype: dict
         """
-        db_declarante = await self.repo.get_by_id(id_declarante, session)
+        pass
 
-        if not db_declarante:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Declarante não encontrado"
-            )
-
-        try:
-            await self.repo.delete(db_declarante, session)
-            return {"ok": True, "message": f"Declarante com ID {id_declarante} deletado com sucesso."}
-        except SQLAlchemyError as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Erro ao deletar: {e}"
-            )
-
-    async def declarantes_reincidentes_por_tipo(self, offset: int, limit: int, session: AsyncSession):
+    async def declarantes_reincidentes_por_tipo(self, offset: int, limit: int) -> list[DeclaranteNumerosDeRegistros]:
         """
         Lista declarantes que são considerados 'reincidentes' e agrupa por tipo de ocorrência.
 
@@ -152,9 +94,9 @@ class DeclaranteService:
         :return: Uma lista de declarantes reincidentes agrupados.
         :rtype: list
         """
-        return await self.repo.declarantes_reincidentes_por_tipo(offset, limit, session)
+        pass
 
-    async def declarantes_sem_boletim(self, offset: int, limit: int, session: AsyncSession):
+    async def declarantes_sem_boletim(self, offset: int, limit: int) -> list[DeclaranteResponse]:
         """
         Lista declarantes que não possuem nenhum boletim de ocorrência associado.
 
@@ -163,9 +105,9 @@ class DeclaranteService:
         :return: Uma lista de declarantes sem boletins.
         :rtype: list[Declarante]
         """
-        return await self.repo.declarantes_sem_boletim(offset, limit, session)
+        pass
 
-    async def ranking_declarantes(self, offset: int, limit: int, session: AsyncSession):
+    async def ranking_declarantes(self, offset: int, limit: int) -> list[DeclaranteNumerosDeRegistros]:
         """
         Gera o ranking de declarantes baseado em algum critério definido (ex: número de participações em boletins).
 
@@ -174,4 +116,4 @@ class DeclaranteService:
         :return: O ranking de declarantes.
         :rtype: list
         """
-        return await self.repo.ranking_declarantes(offset, limit, session)
+        pass

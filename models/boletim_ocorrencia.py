@@ -1,8 +1,7 @@
-from typing import List, Optional
-from datetime import date, datetime
+from typing import List
+from datetime import date
 from enum import Enum
 from beanie import Document, Link
-from pydantic import BaseModel, Field
 
 from models.autor import Autor
 from models.declarante import Declarante

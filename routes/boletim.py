@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, status
 
 from models.boletim_ocorrencia import BoletimOcorrencia
-from schemas.boletim import BoletimOcorrenciaBase
+from schemas.boletim import BoletimOcorrenciaResponse, BoletimOcorrenciaCreate, BoletimOcorrenciaResponseMultiplosDeclarantes
 from service.boletim import BoletimService
-from schemas.boletim import BoletimOcorrenciaCompleto, BoletimOcorrenciaPorDeclarantes, BoletimOcorrencia, BoletimOcorrenciaResumo
 
 
 router = APIRouter(prefix="/boletins", tags=["Boletins"])
@@ -12,99 +11,79 @@ service = BoletimService()
 
 @router.post(
     path="/",
-    response_model=BoletimOcorrencia,
+    response_model=BoletimOcorrenciaResponse,
     status_code=status.HTTP_201_CREATED,
     description="cria um boletim de ocorrencia"
 )
 async def create_boletim(
-    boletim: BoletimOcorrenciaBase,
-    session: AsyncSession = Depends(get_session)
+    boletim: BoletimOcorrenciaCreate,
 ):
-    return await service.create_boletim(boletim, session)
+    return await service.create_boletim(boletim)
 
 
 @router.get(
     path="/",
-    response_model=list[BoletimOcorrencia],
+    response_model=list[BoletimOcorrenciaResponse],
     status_code=status.HTTP_200_OK,
     description="busca todos os boletins de ocorrencia registrados de forma paginada"
 )
 async def list_boletins(
     offset: int = 0,
     limit: int = 10,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.list_boletins(offset, limit, session)
-
-@router.get(
-    path="/completos",
-    status_code=status.HTTP_200_OK,
-    response_model=list[BoletimOcorrenciaCompleto],
-    description="busca boletins de ocorrencia com sua estrutura completa"
-)
-async def listar_completos(
-    offset: int = 0,
-    limit: int = 10,
-    session: AsyncSession = Depends(get_session),
-):
-    return await service.listar_completos(offset, limit, session)
-
+    return await service.list_boletins(offset, limit)
 
 @router.get(
     path="/multiplos-declarantes",
     status_code=status.HTTP_200_OK,
-    response_model=list[BoletimOcorrenciaPorDeclarantes],
+    response_model=list[BoletimOcorrenciaResponseMultiplosDeclarantes],
     description="busca boletins de ocorrencia que tem multiplos declarantes"
 )
 async def boletins_com_mais_de_um_declarante(
     offset: int = 0,
     limit: int = 10,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.boletins_com_mais_de_um_declarante(offset, limit, session)
+    return await service.boletins_com_mais_de_um_declarante(offset, limit)
 
 
 @router.get(
     path="/por-posto/{posto}",
     status_code=status.HTTP_200_OK,
-    response_model=list[BoletimOcorrencia],
+    response_model=list[BoletimOcorrenciaResponse],
     description="busca boletins de ocorrencia por posto especifico"    
 )
 async def boletins_por_posto(
     posto: str,
     offset: int = 0,
     limit: int = 10,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.boletins_por_posto(posto, offset, limit, session)
+    return await service.boletins_por_posto(posto, offset, limit)
 
 
 @router.get(
     path="/abertos/lotacao/{lotacao}",
     status_code=status.HTTP_200_OK,
-    response_model=list[BoletimOcorrenciaResumo],
+    response_model=list[BoletimOcorrenciaResponse],
     description="busca boletins por lotacao especifica"
 )
 async def boletins_abertos_por_lotacao_com_multiplos_declarantes(
     lotacao: str,
     offset: int = 0,
     limit: int = 10,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, session)
+    return await service.boletins_abertos_por_lotacao_com_multiplos_declarantes(lotacao, offset, limit)
 
 
 @router.get(
     path="/{id_boletim}",
     status_code=status.HTTP_200_OK,
-    response_model=BoletimOcorrencia,
+    response_model=BoletimOcorrenciaResponse,
     description="busca boletim por id"
 )
 async def get_boletim(
     id_boletim: int,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.get_boletim(id_boletim, session)
+    return await service.get_boletim(id_boletim)
 
 
 @router.put(
@@ -114,10 +93,9 @@ async def get_boletim(
 )
 async def update_boletim(
     id_boletim: int,
-    boletim: BoletimOcorrenciaBase,
-    session: AsyncSession = Depends(get_session)
+    boletim: BoletimOcorrenciaCreate,
 ):
-    return await service.update_boletim(id_boletim, boletim, session)
+    return await service.update_boletim(id_boletim, boletim)
 
 
 @router.delete(
@@ -126,6 +104,5 @@ async def update_boletim(
 )
 async def delete_boletim(
     id_boletim: int,
-    session: AsyncSession = Depends(get_session)
 ):
-    return await service.delete_boletim(id_boletim, session)
+    return await service.delete_boletim(id_boletim)

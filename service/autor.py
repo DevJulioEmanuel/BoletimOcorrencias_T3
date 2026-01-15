@@ -1,9 +1,5 @@
-from typing import List, Optional
-from beanie import PydanticObjectId
-from pymongo.errors import DuplicateKeyError
 
-from models.autor import Autor 
-from schemas.autor import AutorBase
+from schemas.autor import AutorCreate, AutorResponse
 
 
 class AutorService:
@@ -12,14 +8,13 @@ class AutorService:
         """
         Inicializa o serviço de Autor, instanciando o repositório correspondente.
         """
-        #self.repo = AutorRepository()
 
-    async def create_autor(self, autor: AutorBase):
+    async def create_autor(self, autor: AutorCreate) -> AutorResponse:
         """
         Cria um novo autor no banco de dados.
 
         :param autor: Dados básicos do autor a ser criado.
-        :type autor: AutorBase
+        :type autor: AutorCreate
         :param session: Sessão assíncrona do banco de dados para a operação.
         :type session: AsyncSession
         :raises IntegrityError: Se a matrícula ou ID do autor já existirem.
@@ -27,15 +22,8 @@ class AutorService:
         :return: O objeto Autor criado.
         :rtype: Autor
         """
-        try:
-            autor = Autor(**autor.model_dump())
-            return await autor.create()
-        except IntegrityError:
-            raise IntegrityError("Matrícula ou ID do Autor já existem.", None, None)
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Erro no banco de dados: {e}", None, None)
-
-    async def list_autores(self, offset: int, limit: int):
+        pass
+    async def list_autores(self, offset: int, limit: int) -> list[AutorResponse]:
         """
         Lista autores com paginação.
 
@@ -48,9 +36,9 @@ class AutorService:
         :return: Uma lista de objetos Autor.
         :rtype: list[Autor]
         """
-        return await Autor.find_all().skip(offset).limit(limit).to_list()
+        pass
 
-    async def get_autor(self, id_autor: int, session: AsyncSession):
+    async def get_autor(self, id_autor: int) -> AutorResponse:
         """
         Busca um autor pelo seu ID.
 
@@ -61,16 +49,16 @@ class AutorService:
         :return: O objeto Autor encontrado ou None se não existir.
         :rtype: Autor | None
         """
-        return await self.repo.get_by_id(id_autor, session)
+        pass
 
-    async def update_autor(self, id_autor: int, autor: AutorBase, session: AsyncSession):
+    async def update_autor(self, id_autor: int, autor: AutorCreate) -> AutorResponse:
         """
         Atualiza os dados de um autor existente.
 
         :param id_autor: O ID do autor a ser atualizado.
         :type id_autor: int
         :param autor: Novos dados básicos do autor.
-        :type autor: AutorBase
+        :type autor: AutorCreate
         :param session: Sessão assíncrona do banco de dados para a operação.
         :type session: AsyncSession
         :raises IntegrityError: Se a atualização violar uma restrição de integridade (ex: duplicidade de matrícula).
@@ -78,14 +66,9 @@ class AutorService:
         :return: O objeto Autor atualizado.
         :rtype: Autor
         """
-        try:
-            return await self.repo.update(id_autor, autor, session)
-        except IntegrityError:
-            raise IntegrityError("Dados violam restrição (ex: matrícula duplicada).", None, None)
-        except SQLAlchemyError as e:
-            raise SQLAlchemyError(f"Erro ao atualizar: {e}", None, None)
+        pass
 
-    async def delete_autor(self, id_autor: int, session: AsyncSession):
+    async def delete_autor(self, id_autor: int) -> AutorResponse:
         """
         Deleta um autor pelo seu ID.
 
@@ -97,11 +80,7 @@ class AutorService:
         :return: O objeto Autor deletado.
         :rtype: Autor
         """
-        try:
-            return await self.repo.delete(id_autor, session)
-        except IntegrityError as e:
-            raise IntegrityError(f"Erro: {e}", None, None)
-
+        pass
     """ 
     async def ranking_autores(self, offset: int, limit: int, session: AsyncSession) -> AutorRanking:
         Gera o ranking de autores baseado em algum critério definido (ex: número de boletins).

@@ -1,20 +1,23 @@
 from datetime import date
-from models.autor import Autor
-from models.declarante import Declarante
-from models.boletim_ocorrencia import TipoOcorrencia, StatusBoletim, BoletimOcorrencia
+from models.boletim_ocorrencia import TipoOcorrencia
 from pydantic import BaseModel
+from models.boletim_ocorrencia import StatusBoletim
+from typing import List
 
-class BoletimCreate(BaseModel):
+class BoletimOcorrenciaCreate(BaseModel):
     tipo_ocorrencia: TipoOcorrencia
-    status: Status
+    status: StatusBoletim
     autor_id: str 
     declarantes_ids: List[str] = []
 
-class BoletimResponse(BaseModel):
+class BoletimOcorrenciaResponse(BaseModel):
     id: str
     data_registro: date
     tipo_ocorrencia: str
     status: str
+
+class BoletimOcorrenciaResponseMultiplosDeclarantes(BoletimOcorrenciaResponse):
+    total_declarantes: int
 
     
     class Config:
