@@ -1,7 +1,7 @@
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from motor.motor_asyncio import AsyncIOMotorClient
+from pymongo import AsyncMongoClient
 from beanie import init_beanie
 from dotenv import load_dotenv
 
@@ -12,7 +12,7 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    client = AsyncIOMotorClient(os.getenv("MONGODB_URL"))
+    client = AsyncMongoClient(os.getenv("MONGODB_URL"))
     db_name = os.getenv("DB_NAME")
     
     await init_beanie(
@@ -24,7 +24,6 @@ async def lifespan(app: FastAPI):
         ]
     )
     yield
-
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(autor.router)

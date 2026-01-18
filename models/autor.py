@@ -7,4 +7,4 @@ class Autor(Document):
     lotacao: str
 
     class Settings:
-        name = "autores"
+        name = "autor"

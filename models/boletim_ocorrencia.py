@@ -1,4 +1,4 @@
-from typing import List
+from pydantic import Field
 from datetime import date
 from enum import Enum
 from beanie import Document, Link
@@ -53,12 +53,12 @@ class StatusBoletim(Enum):
     REABERTO = "Reaberto"
 
 class BoletimOcorrencia(Document):
-    data_registro: date
+    data_registro: date = Field(default_factory=date.today)
     tipo_ocorrencia: TipoOcorrencia
     status: StatusBoletim
     
-    autor: Link[Autor] 
-    declarantes: List[Link[Declarante]] = [] 
+    autor: Link[Autor]
+    declarantes: list[Link[Declarante]] = []
     
 
     class Settings:

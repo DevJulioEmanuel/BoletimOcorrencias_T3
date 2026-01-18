@@ -1,7 +1,8 @@
-from pydantic import BaseModel
 from models.declarante import TipoEnvolvimento
 
 from pydantic import BaseModel
+
+from beanie.odm.fields import PydanticObjectId
 
 class DeclaranteCreate(BaseModel):
     nome: str
@@ -10,7 +11,7 @@ class DeclaranteCreate(BaseModel):
     tipo_envolvimento: TipoEnvolvimento 
 
 class DeclaranteResponse(DeclaranteCreate):
-    id: str
+    id: PydanticObjectId
 
 class DeclaranteNumerosDeRegistros(DeclaranteResponse):
     quantidade_registros: int

@@ -2,16 +2,17 @@ from datetime import date
 from models.boletim_ocorrencia import TipoOcorrencia
 from pydantic import BaseModel
 from models.boletim_ocorrencia import StatusBoletim
-from typing import List
+from beanie.odm.fields import PydanticObjectId
+
 
 class BoletimOcorrenciaCreate(BaseModel):
     tipo_ocorrencia: TipoOcorrencia
     status: StatusBoletim
-    autor_id: str 
-    declarantes_ids: List[str] = []
+    autor: PydanticObjectId
+    declarantes: list[PydanticObjectId] = []
 
 class BoletimOcorrenciaResponse(BaseModel):
-    id: str
+    _id: PydanticObjectId
     data_registro: date
     tipo_ocorrencia: str
     status: str

@@ -1,67 +1,139 @@
-
-from schemas.autor import AutorCreate, AutorResponse
+from fastapi import HTTPException, status
+from schemas.autor import AutorCreate, AutorResponse, AutorRanking
+from beanie import PydanticObjectId
+from models import Autor, BoletimOcorrencia
 
 
 class AutorService:
 
     def __init__(self):
-        """
-        Inicializa o serviço de Autor, instanciando o repositório correspondente.
-        """
+        pass
 
     async def create_autor(self, autor: AutorCreate) -> AutorResponse:
         """
-        Cria um novo autor no banco de dados.
+        Cria um novo autor no banco.
 
-        :param autor: Dados básicos do autor a ser criado.
-        :type autor: AutorCreate
-        :rtype: AutorResponse
+        :param autor: Esquema contendo os dados básicos para criação (nome, matrícula, posto, lotação).
+        :return: O documento do Autor criado com seu ID gerado.
         """
-        pass
-    async def list_autores(self, offset: int, limit: int) -> list[AutorResponse]:
-        """
-        Lista autores com paginação.
+        try:
+            novo_autor = Autor(**autor.model_dump())
+            await novo_autor.insert()
+            return novo_autor
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro ao criar autor: {str(e)}"
+            )
 
-        :param offset: Posição inicial para a listagem (deslocamento).
-        :type offset: int
-        :param limit: Número máximo de autores a serem retornados.
-        :type limit: int
-        :rtype: list[AutorResponse]
+    async def list_autores(self, skip: int, limit: int) -> list[AutorResponse]:
         """
-        pass
+        Recupera uma lista paginada de todos os autores cadastrados.
 
-    async def get_autor(self, id_autor: int) -> AutorResponse | None:
+        :param skip: Quantidade de registros a serem ignorados no início.
+        :param limit: Quantidade máxima de registros a serem retornados.
+        :return: Lista de objetos AutorResponse.
         """
-        Busca um autor pelo seu ID.
+        return await Autor.find_all().skip(skip).limit(limit).to_list()
 
-        :param id_autor: O ID do autor a ser buscado.
-        :type id_autor: int
-        :return: O objeto Autor encontrado ou None se não existir.
-        :rtype: AutorResponse | None
+    async def ranking_autores(self, skip: int, limit: int) -> list[AutorRanking]:
         """
-        pass
+        Executa uma agregação para ranquear os autores de acordo com o número de boletins registrados.
 
-    async def update_autor(self, id_autor: int, autor: AutorCreate) -> AutorResponse:
-        """
-        Atualiza os dados de um autor existente.
+        O pipeline agrupa os boletins pelo ID do autor, realiza um lookup para buscar os dados cadastrais
+        e ordena os resultados de forma decrescente.
 
-        :param id_autor: O ID do autor a ser atualizado.
-        :type id_autor: int
-        :param autor: Novos dados básicos do autor.
-        :type autor: AutorCreate
-        :return: O objeto Autor atualizado.
-        :rtype: AutorResponse
+        :param skip: Offset para a paginação dos resultados.
+        :param limit: Limite de autores a serem exibidos no ranking.
+        :return: Lista de autores e seus respectivos totais de boletins.
         """
-        pass
+        pipeline = [
+            {
+                "$group": {
+                    "_id": "$autor.$id",
+                    "total_boletins": {"$sum": 1}
+                }
+            },
+            {
+                "$lookup": {
+                    "from": "autor",
+                    "localField": "_id",
+                    "foreignField": "_id",
+                    "as": "dados_autor"
+                }
+            },
+            {"$unwind": "$dados_autor"},
+            {"$sort": {"total_boletins": -1}},
+            {"$skip": skip},
+            {"$limit": limit},
+            {
+                "$project": {
+                    "id": "$_id",
+                    "nome": "$dados_autor.nome",
+                    "matricula": "$dados_autor.matricula",
+                    "posto": "$dados_autor.posto",
+                    "lotacao": "$dados_autor.lotacao",
+                    "total_boletins": 1,
+                    "_id": 0
+                }
+            }
+        ]
+        return await BoletimOcorrencia.aggregate(pipeline).to_list()
 
-    async def delete_autor(self, id_autor: int) -> AutorResponse:
+    async def get_autor(self, id_autor: PydanticObjectId) -> AutorResponse:
         """
-        Deleta um autor pelo seu ID.
+        Recupera os dados de um autor específico.
 
-        :param id_autor: O ID do autor a ser deletado.
-        :type id_autor: int
-        :param session: Sessão assíncrona do banco de dados para a operação.
-        :return: O objeto Autor deletado.
-        :rtype: AutorResponse
+        :param id_autor: Identificador único do autor (ObjectId).
+        :return: O documento do Autor encontrado.
         """
-        pass
+        autor = await Autor.get(id_autor)
+
+        if not autor:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Autor não encontrado"
+            )
+
+        return autor
+
+    async def update_autor(self, id_autor: PydanticObjectId, autor: AutorResponse) -> AutorResponse:
+        """
+        Atualiza todos os campos de um autor existente de forma dinâmica.
+
+        :param id_autor: Identificador do autor a ser modificado.
+        :param autor: Esquema contendo os novos dados para atualização.
+        :return: O documento do Autor após a persistência das alterações.
+        """
+        autor_att = await Autor.get(id_autor)
+
+        if not autor_att:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Autor não encontrado para atualização"
+            )
+
+        update = autor.model_dump()
+        for key, value in update.items():
+            setattr(autor_att, key, value)
+
+        await autor_att.save()
+        return autor_att
+
+    async def delete_autor(self, id_autor: PydanticObjectId):
+        """
+        Remove um autor da base de dados e retorna uma confirmação de sucesso.
+
+        :param id_autor: Identificador do autor a ser removido.
+        :return: Dicionário contendo a mensagem de sucesso.
+        """
+        autor = await Autor.get(id_autor)
+
+        if not autor:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Autor não encontrado para exclusão"
+            )
+
+        await autor.delete()
+        return {"detail": "Autor deletado com sucesso"}

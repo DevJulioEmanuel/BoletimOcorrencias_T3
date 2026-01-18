@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from beanie.odm.fields import PydanticObjectId
 
 class AutorCreate(BaseModel):
     nome: str
@@ -7,6 +8,8 @@ class AutorCreate(BaseModel):
     lotacao: str
 
 class AutorResponse(AutorCreate):
-    id: str 
-    
-    model_config = {"from_attributes": True}
+    id: PydanticObjectId
+
+class AutorRanking(AutorResponse):
+    nome: str
+    total_boletins: int

@@ -1,6 +1,6 @@
 from datetime import date
 from enum import Enum
-from beanie import Document
+from beanie import Document, Link
 
 
 class TipoEnvolvimento(str, Enum):
@@ -16,6 +16,7 @@ class Declarante(Document):
     cpf: str
     endereco: str
     tipo_envolvimento: TipoEnvolvimento
+
 
     class Settings:
         name = "declarantes"

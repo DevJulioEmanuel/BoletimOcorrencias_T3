@@ -2,6 +2,8 @@ from fastapi import APIRouter, status
 from schemas.declarante import DeclaranteCreate, DeclaranteResponse, DeclaranteNumerosDeRegistros
 from service.declarante import DeclaranteService
 
+from beanie.odm.fields import PydanticObjectId
+
 
 router = APIRouter(
     prefix="/declarantes",
@@ -28,23 +30,20 @@ async def create_declarante(
     status_code=status.HTTP_200_OK,
     description="busca todos os declarantes de forma paginada"    
 )
-async def read_declarantes(
-    offset: int = 0,
-    limit: int = 50,
-):
-    return await service.list_declarantes(offset, limit)
+async def read_declarantes(skip: int = 0, limit: int = 50):
+    return await service.list_declarantes(skip, limit)
 
 @router.get(
     path="/sem-boletim",
     status_code=status.HTTP_200_OK,
-    response_model=list[DeclaranteResponse],
+    response_model=list[DeclaranteNumerosDeRegistros],
     description="busca todos os declarantes sem boletim"    
 )
 async def declarantes_sem_boletim(
-    offset: int = 0,
+    skip: int = 0,
     limit: int = 50,
 ):
-    return await service.declarantes_sem_boletim(offset, limit)
+    return await service.declarantes_sem_boletim(skip, limit)
 
 @router.get(
     path="/ranking",
@@ -53,10 +52,10 @@ async def declarantes_sem_boletim(
     description="busca declarantes que possuem mais boletins registrados"    
 )
 async def ranking_declarantes(
-    offset: int = 0,
+    skip: int = 0,
     limit: int = 50,
 ):
-    return await service.ranking_declarantes(offset, limit)
+    return await service.ranking_declarantes(skip, limit)
 
 @router.get(
     path="/reincidentes/tipo",
@@ -65,10 +64,10 @@ async def ranking_declarantes(
     description="busca declarantes por reincidentes"    
 )
 async def declarantes_reincidentes_por_tipo(
-    offset: int = 0,
+    skip: int = 0,
     limit: int = 50,
 ):
-    return await service.declarantes_reincidentes_por_tipo(offset, limit)
+    return await service.declarantes_reincidentes_por_tipo(skip, limit)
 
 @router.get(
     path="/{id_declarante}",
@@ -77,7 +76,7 @@ async def declarantes_reincidentes_por_tipo(
     description="busca declarante por id"    
 )
 async def read_declarante(
-    id_declarante: int,
+    id_declarante: PydanticObjectId,
 ):
     return await service.get_declarante(id_declarante)
 
@@ -89,7 +88,7 @@ async def read_declarante(
     description="edita um declarante"    
 )
 async def update_declarante(
-    id_declarante: int,
+    id_declarante: PydanticObjectId,
     declarante: DeclaranteCreate,
 ):
     return await service.update_declarante(id_declarante, declarante)
@@ -100,7 +99,7 @@ async def update_declarante(
     status_code=status.HTTP_204_NO_CONTENT,
     description="deleta um declarante"    
 )
-async def delete_declarante(id_declarante: int):
-    return await service.delete_declarante(id_declarante)
+async def delete_declarante(id_declarante: PydanticObjectId):
+    await service.delete_declarante(id_declarante)
 
 
