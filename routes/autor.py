@@ -75,7 +75,7 @@ async def read_autor(
 )
 async def update_autor(
     id_autor: PydanticObjectId,
-    autor: AutorResponse
+    autor: AutorCreate
 ):
     
     return await service.update_autor(id_autor, autor)
