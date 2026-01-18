@@ -1,0 +1,3 @@
+Refatorar API e Schemas para nova versao do trabalo: Emanuel Dias
+Modelagem do banco: Julio Emanuel
+Consultas ao banco: Arthur Lelis
